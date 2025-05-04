@@ -23,6 +23,8 @@ class Atuadores:
         pass
 
     def apontar(self, dec, ra):
+        ra = self.converter_horas_para_graus(ra)
+
         dec = aritmetica.converter_angulo_para_passos(dec)
         ra = aritmetica.converter_angulo_para_passos(ra)
 
@@ -59,6 +61,9 @@ class Atuadores:
         dec = dec - self.posicao["dec"]
         ra = ra - self.posicao["ra"]
         return dec, ra
+
+    def converter_horas_para_graus(self, horas):
+        return horas * 15.0
 
     def __del__(self):
         GPIO.cleanup()
