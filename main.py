@@ -9,6 +9,7 @@ posicao_alvo = {"az": None, "alt": None}
 rastreamento_ativo = False
 lock = threading.Lock()
 
+
 def loop_rastreamento():
     global rastreamento_ativo
     print("Iniciando rastreamento...")
@@ -21,8 +22,10 @@ def loop_rastreamento():
             # Aqui você chama o controle real do motor, ex: mover_motor(az, alt)
         time.sleep(5)  # Atualiza a cada 5 segundos
 
+
 @app.route('/apontar', methods=['POST'])
 def apontar():
+    print("LOG: /apontar")
     global rastreamento_ativo
     data = request.json
     az = data.get('az')
@@ -43,6 +46,7 @@ def apontar():
         t.start()
 
     return {"status": "rastreamento iniciado ou atualizado"}, 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
