@@ -25,7 +25,7 @@ def loop_rastreamento():
 
 @app.route('/apontar', methods=['POST'])
 def apontar():
-    print("LOG: /apontar")
+    print(f"LOG: /apontar {request.json}")
     global rastreamento_ativo
     data = request.json
     az = data.get('az')
