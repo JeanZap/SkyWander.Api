@@ -1,8 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import threading
 import time
 from Atuador import Atuador
 import Configuracao.Configuracao as config
+import json
 import requests
 
 app = Flask(__name__)
@@ -12,16 +13,18 @@ posicao_alvo = {"ra": None, "dec": None, "name": None}
 rastreamento_ativo = False
 lock = threading.Lock()
 
+print(config.velocidade_rotacao_terra_graus_segundos,
+      config.resolucao, config.delay_atualizacao)
+
 
 def obterPosicaoAstro(name):
     resposta = requests.get(
         f"{config.server_stelarium}/objects/info?name={name}&format=json")
 
     if resposta.status_code == 200:
-        dados_api = resposta.json()
-        return jsonify(dados_api)
+        return resposta.json()
     else:
-        return jsonify({'erro': 'Falha ao acessar API externa'}), 500
+        return json.dumps({'erro': 'Falha ao acessar API externa'}), 500
 
 
 def loop_rastreamento():
@@ -39,7 +42,7 @@ def loop_rastreamento():
         if ra is not None and dec is not None:
             print(f"Movendo para Ra: {ra}, Dec: {dec}")
             # Aqui você chama o controle real do motor, ex: mover_motor(az, alt)
-        time.sleep(5)  # Atualiza a cada 5 segundos
+        time.sleep(config.delay_atualizacao)
 
 
 @app.route('/apontar', methods=['POST'])
