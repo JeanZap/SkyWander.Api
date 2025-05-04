@@ -50,12 +50,15 @@ class Atuadores:
             clockwise=sentido,
             steptype="Full",
             steps=passos,
-            stepdelay=0.001,
+            stepdelay=0.01,
             verbose=False,
-            initdelay=0.05
+            initdelay=0.5
         )
 
     def diferencaPosicaoParaAlvo(self, dec, ra):
         dec = dec-self.posicao['dec']
         ra = ra-self.posicao['ra']
         return dec, ra
+
+    def __del__(self):
+        GPIO.cleanup()
