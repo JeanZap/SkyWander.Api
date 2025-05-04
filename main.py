@@ -1,24 +1,43 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import threading
 import time
+from Atuador import Atuador
+import Configuracao as config
+import requests
 
 app = Flask(__name__)
 
 # Variáveis compartilhadas
-posicao_alvo = {"az": None, "alt": None}
+posicao_alvo = {"ra": None, "dec": None, "name": None}
 rastreamento_ativo = False
 lock = threading.Lock()
 
 
+def obterPosicaoAstro(name):
+    resposta = requests.get(
+        f"{config.server_stelarium}/objects/info?name={name}&format=json")
+
+    if resposta.status_code == 200:
+        dados_api = resposta.json()
+        return jsonify(dados_api)
+    else:
+        return jsonify({'erro': 'Falha ao acessar API externa'}), 500
+
+
 def loop_rastreamento():
     global rastreamento_ativo
-    print("Iniciando rastreamento...")
+
     while rastreamento_ativo:
+        name = posicao_alvo.get("name")
+
+        posicao = obterPosicaoAstro(name)
+
         with lock:
-            az = posicao_alvo.get("az")
-            alt = posicao_alvo.get("alt")
-        if az is not None and alt is not None:
-            print(f"Movendo para Az: {az}, Alt: {alt}")
+            ra = posicao.get("ra")
+            dec = posicao.get("dec")
+
+        if ra is not None and dec is not None:
+            print(f"Movendo para Ra: {ra}, Dec: {dec}")
             # Aqui você chama o controle real do motor, ex: mover_motor(az, alt)
         time.sleep(5)  # Atualiza a cada 5 segundos
 
@@ -28,17 +47,14 @@ def apontar():
     print(f"LOG: /apontar {request.json}")
     global rastreamento_ativo
     data = request.json
-    az = data.get('az')
-    alt = data.get('alt')
+    name = data.get('name')
 
-    if az is None or alt is None:
-        return {"erro": "az e alt são obrigatórios"}, 400
+    if name is None:
+        return {"erro": "name é obrigatórios"}, 400
 
     with lock:
-        posicao_alvo["az"] = az
-        posicao_alvo["alt"] = alt
+        posicao_alvo["name"] = name
 
-    # Inicia o loop de rastreamento, se ainda não estiver ativo
     if not rastreamento_ativo:
         rastreamento_ativo = True
         t = threading.Thread(target=loop_rastreamento)

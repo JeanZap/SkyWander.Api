@@ -1,0 +1,1 @@
+server_stelarium = 'http://192.168.100.69:8090/api'
