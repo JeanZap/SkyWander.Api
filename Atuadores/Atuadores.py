@@ -1,5 +1,3 @@
-import RPi.GPIO as GPIO
-from RpiMotorLib import RpiMotorLib
 import Aritmetica.Aritmetica as aritmetica
 import Configuracao.Configuracao as configuracao
 import threading
@@ -9,12 +7,12 @@ class Atuadores:
     posicao = {"dec": 0, "ra": 0}
 
     def __init__(self):
-        GPIO.setmode(GPIO.BCM)
+        # GPIO.setmode(GPIO.BCM)
 
-        self.motorDec = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (False, False, False), "A4988")
-        self.motorRa = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (False, False, False), "A4988")
+        # self.motorDec = RpiMotorLib.A4988Nema(
+        #     configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (False, False, False), "A4988")
+        # self.motorRa = RpiMotorLib.A4988Nema(
+        #     configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (False, False, False), "A4988")
         # Os 3 últimos valores são para MS1, MS2, MS3 - False assume controle físico no driver
         self._homing()
 
@@ -46,14 +44,14 @@ class Atuadores:
     def _mover_motor(self, motor, passos):
         sentido = passos > 0
 
-        motor.motor_go(
-            clockwise=sentido,
-            steptype="Full",
-            steps=passos,
-            stepdelay=0.01,
-            verbose=False,
-            initdelay=0.5
-        )
+        # motor.motor_go(
+        #     clockwise=sentido,
+        #     steptype="Full",
+        #     steps=passos,
+        #     stepdelay=0.01,
+        #     verbose=False,
+        #     initdelay=0.5
+        # )
 
     def diferencaPosicaoParaAlvo(self, dec, ra):
         dec = dec-self.posicao['dec']
