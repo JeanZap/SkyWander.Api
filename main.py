@@ -1,7 +1,7 @@
 from flask import Flask, request
 import threading
 import time
-from Atuador import Atuador
+from Atuadores.Atuadores import Atuadores
 import Configuracao.Configuracao as config
 import json
 import requests
@@ -12,14 +12,12 @@ app = Flask(__name__)
 posicao_alvo = {"ra": None, "dec": None, "name": None}
 rastreamento_ativo = False
 lock = threading.Lock()
-
-print(config.velocidade_rotacao_terra_graus_segundos,
-      config.resolucao, config.delay_atualizacao)
+atuadores = Atuadores()
 
 
 def obterPosicaoAstro(name):
     resposta = requests.get(
-        f"{config.server_stelarium}/objects/info?name={name}&format=json")
+        f"{config.SERVER_STELARIUM}/objects/info?name={name}&format=json")
 
     if resposta.status_code == 200:
         return resposta.json()
@@ -36,13 +34,13 @@ def loop_rastreamento():
         posicao = obterPosicaoAstro(name)
 
         with lock:
-            ra = posicao.get("ra")
             dec = posicao.get("dec")
+            ra = posicao.get("ra")
 
         if ra is not None and dec is not None:
-            print(f"Movendo para Ra: {ra}, Dec: {dec}")
-            # Aqui você chama o controle real do motor, ex: mover_motor(az, alt)
-        time.sleep(config.delay_atualizacao)
+            # print(f"Movendo para Ra: {ra}, Dec: {dec}")
+            atuadores.apontar(dec, ra)
+        time.sleep(config.DELAY_ATUALIZACAO)
 
 
 @app.route('/apontar', methods=['POST'])

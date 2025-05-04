@@ -1,6 +1,12 @@
-server_stelarium = 'http://192.168.100.69:8090/api'
-resolucao_motor = 1.8
-reducao = 1024
-resolucao = resolucao_motor / reducao
-velocidade_rotacao_terra_graus_segundos = 15/3600
-delay_atualizacao = resolucao/velocidade_rotacao_terra_graus_segundos
+SERVER_STELARIUM = 'http://192.168.100.69:8090/api'
+RESOLUCAO_MOTOR = 1.8
+REDUCAO = 1024
+RESOLUCAO_ATUADOR = RESOLUCAO_MOTOR / REDUCAO
+ROTACAO_TERRA_GRAUS_SEGUNDO = 15/3600
+DELAY_ATUALIZACAO = RESOLUCAO_ATUADOR/ROTACAO_TERRA_GRAUS_SEGUNDO
+
+STEP_PIN_DEC = 21
+DIR_PIN_DEC = 20
+
+STEP_PIN_RA = 26
+DIR_PIN_RA = 19
