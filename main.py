@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import threading
 import time
 from Atuador import Atuador
-import Configuracao as config
+import Configuracao.Configuracao as config
 import requests
 
 app = Flask(__name__)
