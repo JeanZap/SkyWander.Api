@@ -26,14 +26,15 @@ class Atuadores:
         dec = aritmetica.converter_angulo_para_passos(dec)
         ra = aritmetica.converter_angulo_para_passos(ra)
 
-        decRestante, raRestante = self.diferencaPosicaoParaAlvo(dec, ra)
+        decPassosRestantes, raPassosRestantes = self.diferencaPosicaoParaAlvo(
+            dec, ra)
 
-        print(decRestante, raRestante)
+        print(decPassosRestantes, raPassosRestantes)
 
         t1 = threading.Thread(target=self._mover_motor,
-                              args=(None, decRestante))
+                              args=(None, decPassosRestantes))
         t2 = threading.Thread(target=self._mover_motor,
-                              args=(None, raRestante))
+                              args=(None, raPassosRestantes))
 
         t1.start()
         t2.start()
@@ -56,8 +57,8 @@ class Atuadores:
         )
 
     def diferencaPosicaoParaAlvo(self, dec, ra):
-        dec = dec - self.posicao["dec"]
-        ra = ra - self.posicao["ra"]
+        dec = (dec - self.posicao["dec"])/configuracao.RESOLUCAO_ATUADOR
+        ra = (ra - self.posicao["ra"])/configuracao.RESOLUCAO_ATUADOR
         return dec, ra
 
     def __del__(self):
