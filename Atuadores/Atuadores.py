@@ -15,10 +15,9 @@ class Atuadores:
         GPIO.setmode(GPIO.BCM)
 
         self.motorDec = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (False, False, False), "A4988")
+            configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (True, True, True), "A4988")
         self.motorRa = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (False, False, False), "A4988")
-        # Os 3 últimos valores são para MS1, MS2, MS3 - False assume controle físico no driver
+            configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (True, True, True), "A4988")
         self._homing()
 
     def _homing(self):
@@ -37,17 +36,16 @@ class Atuadores:
         decPassosRestantes, raPassosRestantes = self.diferencaPosicaoParaAlvo(
             dec, ra)
 
+        t1 = threading.Thread(target=self._mover_motor,
+                              args=(None, decPassosRestantes))
+        t2 = threading.Thread(target=self._mover_motor,
+                              args=(None, raPassosRestantes))
 
-        # t1 = threading.Thread(target=self._mover_motor,
-        #                       args=(None, decPassosRestantes))
-        # t2 = threading.Thread(target=self._mover_motor,
-        #                       args=(None, raPassosRestantes))
+        t1.start()
+        t2.start()
 
-        # t1.start()
-        # t2.start()
-
-        # t1.join()
-        # t2.join()
+        t1.join()
+        t2.join()
 
         self.posicao = {"dec": dec, "ra": ra}
 
@@ -56,7 +54,7 @@ class Atuadores:
 
         motor.motor_go(
             clockwise=sentido,
-            steptype="Full",
+            steptype=configuracao.TIPO_PASSO,
             steps=passos,
             stepdelay=0.01,
             verbose=False,
