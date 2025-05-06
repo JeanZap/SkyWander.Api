@@ -3,9 +3,12 @@ from RpiMotorLib import RpiMotorLib
 import Aritmetica.Aritmetica as aritmetica
 import Configuracao.Configuracao as configuracao
 import threading
+import datetime
 
 
 class Atuadores:
+    ultimoDec = 0
+    ultimoRa = 0
     posicao = {"dec": 0, "ra": 0}
 
     def __init__(self):
@@ -26,21 +29,25 @@ class Atuadores:
         dec = aritmetica.converter_angulo_para_passos(dec)
         ra = aritmetica.converter_angulo_para_passos(ra)
 
+        if self.ultimoDec != dec or self.ultimoRa != ra:
+            print(f"Declination: {dec}, Right ascension: {ra} {datetime.datetime.now()}")
+            self.ultimoDec = dec
+            self.ultimoRa = ra
+
         decPassosRestantes, raPassosRestantes = self.diferencaPosicaoParaAlvo(
             dec, ra)
 
-        print(decPassosRestantes, raPassosRestantes)
 
-        t1 = threading.Thread(target=self._mover_motor,
-                              args=(None, decPassosRestantes))
-        t2 = threading.Thread(target=self._mover_motor,
-                              args=(None, raPassosRestantes))
+        # t1 = threading.Thread(target=self._mover_motor,
+        #                       args=(None, decPassosRestantes))
+        # t2 = threading.Thread(target=self._mover_motor,
+        #                       args=(None, raPassosRestantes))
 
-        t1.start()
-        t2.start()
+        # t1.start()
+        # t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
 
         self.posicao = {"dec": dec, "ra": ra}
 
