@@ -53,7 +53,7 @@ class Atuadores:
         if self.posicao["decPassos"] != decAlvoPassos or self.posicao["raPassos"] != raAlvoPassos:
             self.posicao = {"dec": decAlvo, "ra": raAlvo,
                             "decPassos": decAlvoPassos, "raPassos": raAlvoPassos}
-        print("ASDF")
+
         self.iniciar_tracking()
 
     def _mover_motor(self, motor, passos):
@@ -93,7 +93,6 @@ class Atuadores:
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
-            print(passos_ra)
             if passos_ra != 0:
                 self._mover_motor(self.motorRa, passos_ra)
                 self.posicao["ra"] += movimento_ra
