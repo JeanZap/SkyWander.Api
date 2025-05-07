@@ -9,6 +9,7 @@ import requests
 app = Flask(__name__)
 
 # Variáveis compartilhadas
+HEADERS = {'Content-Type': 'application/json'}
 posicao_alvo = {"ra": None, "dec": None, "name": None}
 rastreamento_ativo = False
 lock = threading.Lock()
@@ -17,7 +18,7 @@ atuadores = Atuadores()
 
 def obterPosicaoAstro(name):
     resposta = requests.get(
-        f"{config.SERVER_STELARIUM}/objects/info?name={name}&format=json")
+        f"{config.SERVER_STELARIUM}/objects/info?name={name}&format=json", headers=HEADERS)
 
     if resposta.status_code == 200:
         return resposta.json()
@@ -25,22 +26,20 @@ def obterPosicaoAstro(name):
         return json.dumps({'erro': 'Falha ao acessar API externa'}), 500
 
 
-def loop_rastreamento():
+def iniciar_rastreamento():
     global rastreamento_ativo
 
-    while rastreamento_ativo:
-        name = posicao_alvo.get("name")
+    name = posicao_alvo.get("name")
 
-        posicao = obterPosicaoAstro(name)
+    posicao = obterPosicaoAstro(name)
 
-        with lock:
-            dec = posicao.get("dec")
-            ra = posicao.get("ra")
+    with lock:
+        dec = posicao.get("dec")
+        ra = posicao.get("ra")
 
-        if ra is not None and dec is not None:
-            # print(f"Movendo para Ra: {ra}, Dec: {dec}")
-            atuadores.apontar(dec, ra)
-        time.sleep(config.DELAY_ATUALIZACAO)
+    if ra is not None and dec is not None:
+        # print(f"Movendo para Ra: {ra}, Dec: {dec}")
+        atuadores.apontar(dec, ra)
 
 
 @app.route('/apontar', methods=['POST'])
@@ -58,7 +57,7 @@ def apontar():
 
     if not rastreamento_ativo:
         rastreamento_ativo = True
-        t = threading.Thread(target=loop_rastreamento)
+        t = threading.Thread(target=iniciar_rastreamento)
         t.daemon = True
         t.start()
 
