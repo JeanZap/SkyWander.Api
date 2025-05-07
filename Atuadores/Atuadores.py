@@ -9,7 +9,7 @@ import datetime
 class Atuadores:
     ultimoDec = 0
     ultimoRa = 0
-    posicao = {"dec": 0, "ra": 0}
+    posicao = {"dec": 0, "ra": 0, "decPassos": 0, "raPassos": 0}
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -24,17 +24,18 @@ class Atuadores:
         # todo: Executar homing
         pass
 
-    def apontar(self, dec, ra):
-        dec = aritmetica.converter_angulo_para_passos(dec)
-        ra = aritmetica.converter_angulo_para_passos(ra)
+    def apontar(self, decAlvo, raAlvo):
+        decAlvoPassos = aritmetica.converter_angulo_para_passos(decAlvo)
+        raAlvoPassos = aritmetica.converter_angulo_para_passos(raAlvo)
 
-        if self.ultimoDec != dec or self.ultimoRa != ra:
-            print(f"Declination: {dec}, Right ascension: {ra} {datetime.datetime.now()}")
-            self.ultimoDec = dec
-            self.ultimoRa = ra
+        if self.ultimoDec != decAlvoPassos or self.ultimoRa != raAlvoPassos:
+            print(
+                f"Declination: {decAlvoPassos}, Right ascension: {raAlvoPassos} {datetime.datetime.now()}")
+            self.ultimoDec = decAlvoPassos
+            self.ultimoRa = raAlvoPassos
 
         decPassosRestantes, raPassosRestantes = self.diferencaPosicaoParaAlvo(
-            dec, ra)
+            decAlvoPassos, raAlvoPassos)
 
         t1 = threading.Thread(target=self._mover_motor,
                               args=(None, decPassosRestantes))
@@ -47,7 +48,9 @@ class Atuadores:
         t1.join()
         t2.join()
 
-        self.posicao = {"dec": dec, "ra": ra}
+        if self.posicao["decPassos"] != decAlvoPassos or self.posicao["raPassos"] != raAlvoPassos:
+            self.posicao = {"dec": decAlvo, "ra": raAlvo,
+                            "decPassos": decAlvoPassos, "raPassos": raAlvoPassos}
 
     def _mover_motor(self, motor, passos):
         sentido = passos > 0
