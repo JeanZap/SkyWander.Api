@@ -7,8 +7,6 @@ import datetime
 
 
 class Atuadores:
-    ultimoDec = 0
-    ultimoRa = 0
     posicao = {"dec": 0, "ra": 0, "decPassos": 0, "raPassos": 0}
 
     def __init__(self):
