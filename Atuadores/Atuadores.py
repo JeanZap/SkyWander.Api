@@ -53,7 +53,7 @@ class Atuadores:
     def _mover_motor(self, motor, passos):
         sentido = passos > 0
 
-        motor.motor_go(
+        self.motor.motor_go(
             clockwise=sentido,
             steptype=configuracao.TIPO_PASSO,
             steps=passos,
