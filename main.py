@@ -35,7 +35,7 @@ def iniciar_rastreamento():
 
     with lock:
         dec = posicao.get("dec")
-        ra = posicao.get("ra")
+        ra = posicao.get("hourAngle-dd")
 
     if ra is not None and dec is not None:
         # print(f"Movendo para Ra: {ra}, Dec: {dec}")
