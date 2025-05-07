@@ -1,5 +1,5 @@
-import RPi.GPIO as GPIO
-from RpiMotorLib import RpiMotorLib
+# import RPi.GPIO as GPIO
+# from RpiMotorLib import RpiMotorLib
 import Aritmetica.Aritmetica as aritmetica
 import Configuracao.Configuracao as configuracao
 import threading
@@ -10,13 +10,14 @@ class Atuadores:
     posicao = {"dec": 0, "ra": 0, "decPassos": 0, "raPassos": 0}
 
     def __init__(self):
-        GPIO.setmode(GPIO.BCM)
+        # GPIO.setmode(GPIO.BCM)
 
-        self.motorDec = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (True, True, True), "A4988")
-        self.motorRa = RpiMotorLib.A4988Nema(
-            configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (True, True, True), "A4988")
-        self._homing()
+        # self.motorDec = RpiMotorLib.A4988Nema(
+        #     configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (True, True, True), "A4988")
+        # self.motorRa = RpiMotorLib.A4988Nema(
+        #     configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (True, True, True), "A4988")
+        # self._homing()
+        pass
 
     def _homing(self):
         # todo: Executar homing
@@ -26,25 +27,23 @@ class Atuadores:
         decAlvoPassos = aritmetica.converter_angulo_para_passos(decAlvo)
         raAlvoPassos = aritmetica.converter_angulo_para_passos(raAlvo)
 
-        if self.ultimoDec != decAlvoPassos or self.ultimoRa != raAlvoPassos:
+        if self.posicao["decPassos"] != decAlvoPassos or self.posicao["raPassos"] != raAlvoPassos:
             print(
                 f"Declination: {decAlvoPassos}, Right ascension: {raAlvoPassos} {datetime.datetime.now()}")
-            self.ultimoDec = decAlvoPassos
-            self.ultimoRa = raAlvoPassos
 
         decPassosRestantes, raPassosRestantes = self.diferencaPosicaoParaAlvo(
             decAlvoPassos, raAlvoPassos)
 
-        t1 = threading.Thread(target=self._mover_motor,
-                              args=(None, decPassosRestantes))
-        t2 = threading.Thread(target=self._mover_motor,
-                              args=(None, raPassosRestantes))
+        # t1 = threading.Thread(target=self._mover_motor,
+        #                       args=(None, decPassosRestantes))
+        # t2 = threading.Thread(target=self._mover_motor,
+        #                       args=(None, raPassosRestantes))
 
-        t1.start()
-        t2.start()
+        # t1.start()
+        # t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
 
         if self.posicao["decPassos"] != decAlvoPassos or self.posicao["raPassos"] != raAlvoPassos:
             self.posicao = {"dec": decAlvo, "ra": raAlvo,
