@@ -8,6 +8,7 @@ import time
 
 
 class Atuadores:
+    posicaoInicial = {"dec": 0, "ra": 0, "decPassos": 0, "raPassos": 0}
     posicao = {"dec": 0, "ra": 0, "decPassos": 0, "raPassos": 0}
     tracking_ativo = False
     taxa_sideral = 0.004178
@@ -20,12 +21,16 @@ class Atuadores:
             configuracao.DIR_PIN_DEC, configuracao.STEP_PIN_DEC, (True, True, True), "A4988")
         self.motorRa = RpiMotorLib.A4988Nema(
             configuracao.DIR_PIN_RA, configuracao.STEP_PIN_RA, (True, True, True), "A4988")
+
         self._homing()
-        pass
 
     def _homing(self):
         # todo: Executar homing
         pass
+
+    def moverHome(self):
+        self._parar_tracking()
+        self.apontar(self, 0, 90)
 
     def apontar(self, decAlvo, raAlvo):
         self._parar_tracking()
@@ -47,7 +52,6 @@ class Atuadores:
         t1.join()
         t2.join()
 
-        print(decAlvoPassos, raAlvoPassos, decAlvo, raAlvo)
         print(
             f"Declination: {decAlvoPassos}, Right ascension: {raAlvoPassos} {datetime.datetime.now()}", decAlvo, raAlvo)
         if self.posicao["decPassos"] != decAlvoPassos or self.posicao["raPassos"] != raAlvoPassos:
