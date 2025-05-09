@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_cors import CORS
 import threading
 import time
 from Atuadores.Atuadores import Atuadores
@@ -7,6 +8,7 @@ import json
 import requests
 
 app = Flask(__name__)
+CORS(app)
 
 # Variáveis compartilhadas
 HEADERS = {'Content-Type': 'application/json'}
@@ -61,7 +63,15 @@ def apontar():
         t.daemon = True
         t.start()
 
-    return {"status": "rastreamento iniciado ou atualizado"}, 200
+    return {"status": "Rastreamento iniciado ou atualizado"}, 200
+
+@app.route('/desligar', methods=['POST'])
+def desligar():
+    print(f"LOG: /desligar {request.json}")
+
+    atuadores.moverHome()
+
+    return {"status": "Desligado com sucesso"}, 200
 
 
 if __name__ == '__main__':
