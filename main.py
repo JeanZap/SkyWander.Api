@@ -63,6 +63,14 @@ def apontar():
 
     return {"status": "rastreamento iniciado ou atualizado"}, 200
 
+@app.route('/desligar', methods=['POST'])
+def apontar():
+    print(f"LOG: /desligar {request.json}")
+
+    atuadores.moverHome()
+
+    return {"status": "rastreamento iniciado ou atualizado"}, 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
