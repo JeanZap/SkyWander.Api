@@ -9,8 +9,10 @@ import time
 
 
 class Atuadores:
-    posicaoInicial = {"dec": 0, "ra": 90, "decPassos": 0, "raPassos": 0}
-    posicao = {"dec": 0, "ra": 90, "decPassos": 0, "raPassos": 0}
+    posicaoInicial = {"dec": 0, "ra": 90, "decPassos": 0,
+                      "raPassos": aritmetica.converter_angulo_para_passos(90)}
+    posicao = {"dec": 0, "ra": 90, "decPassos": 0,
+               "raPassos": aritmetica.converter_angulo_para_passos(90)}
     tracking_ativo = False
     taxa_sideral = 0.004178
     ultimo_tempo_tracking = None
