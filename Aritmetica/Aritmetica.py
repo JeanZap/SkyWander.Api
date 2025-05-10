@@ -4,7 +4,7 @@ from astropy.coordinates import EarthLocation, Angle
 import astropy.units as u
 
 
-def converter_angulo_para_passos(angulo):
+def converter_angulo_para_passos(angulo: float):
     return int(angulo / conf.RESOLUCAO_ATUADOR)
 
 

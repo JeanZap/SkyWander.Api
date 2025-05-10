@@ -69,7 +69,7 @@ def apontar():
 def desligar():
     print(f"LOG: /desligar {request.json}")
 
-    atuadores.moverHome()
+    atuadores.mover_home()
 
     return {"status": "Desligado com sucesso"}, 200
 
