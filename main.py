@@ -2,7 +2,7 @@ from flask import Flask, request
 from flask_cors import CORS
 import threading
 from domain.montagem import Montagem
-import Configuracao.Configuracao as config
+import shared.configuracao as config
 import json
 import requests
 
