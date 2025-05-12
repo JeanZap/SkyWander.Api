@@ -1,8 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 import threading
-import time
-from Atuadores.Atuadores import Atuadores
+from domain.montagem import Montagem
 import Configuracao.Configuracao as config
 import json
 import requests
@@ -15,7 +14,7 @@ HEADERS = {'Content-Type': 'application/json'}
 posicao_alvo = {"ra": None, "dec": None, "name": None}
 rastreamento_ativo = False
 lock = threading.Lock()
-atuadores = Atuadores()
+atuadores = Montagem()
 
 
 def obterPosicaoAstro(name):
@@ -64,6 +63,7 @@ def apontar():
         t.start()
 
     return {"status": "Rastreamento iniciado ou atualizado"}, 200
+
 
 @app.route('/desligar', methods=['POST'])
 def desligar():

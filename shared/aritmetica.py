@@ -1,4 +1,4 @@
-import Configuracao.Configuracao as conf
+import configuracao as conf
 from astropy.time import Time
 from astropy.coordinates import EarthLocation, Angle
 import astropy.units as u

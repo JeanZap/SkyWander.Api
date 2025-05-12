@@ -1,14 +1,14 @@
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 from RpiMotorLib.RpiMotorLib import A4988Nema
-import Aritmetica.Aritmetica as aritmetica
-import Configuracao.Configuracao as conf
+import shared.aritmetica as aritmetica
+import shared.configuracao as conf
 import threading
 import datetime
 import time
 
 
-class Atuadores:
+class Montagem:
     posicaoInicial = {"dec": 0, "ra": 90, "decPassos": 0,
                       "raPassos": aritmetica.converter_angulo_para_passos(90)}
     posicao = {"dec": 0, "ra": 90, "decPassos": 0,
