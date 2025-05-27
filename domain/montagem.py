@@ -42,7 +42,7 @@ class Montagem:
         raAlvoPassos = aritmetica.converter_angulo_para_passos(raAlvo)
 
         decPassosRestantes, raPassosRestantes = self.diferenca_posicao_alvo(
-            decAlvoPassos, raAlvoPassos)
+            decAlvo, raAlvo)
 
         t1 = threading.Thread(target=self._mover_motor,
                               args=(self.motorDec, decPassosRestantes))
@@ -55,8 +55,6 @@ class Montagem:
         t1.join()
         t2.join()
 
-        print(
-            f"Declination: {decAlvoPassos}, Right ascension: {raAlvoPassos} {datetime.datetime.now()}", decAlvo, raAlvo)
         self.posicao = {"dec": decAlvo, "ra": raAlvo,
                         "decPassos": decAlvoPassos, "raPassos": raAlvoPassos}
 
@@ -68,8 +66,8 @@ class Montagem:
         motor.motor_go(
             clockwise=sentido,
             steptype=conf.TIPO_PASSO,
-            steps=passos,
-            stepdelay=0.01,
+            steps=abs(passos),
+            stepdelay=0.001,
             verbose=False,
             initdelay=0.5
         )
