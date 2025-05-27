@@ -2,10 +2,10 @@ import socket
 import struct
 import json
 import numpy as np
-import shared.Aritmetica as aritmetica
-# from Atuadores.Atuadores import Atuadores
+import shared.aritmetica as aritmetica
+from domain.montagem import Montagem
 
-# atuadores = Atuadores()
+atuadores = Montagem()
 
 
 def start_stellarium_receiver(host='localhost', port=10001):
