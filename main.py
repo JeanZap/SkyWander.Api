@@ -12,7 +12,6 @@ CORS(app)
 # Variáveis compartilhadas
 HEADERS = {'Content-Type': 'application/json'}
 posicao_alvo = {"ra": None, "dec": None, "name": None}
-rastreamento_ativo = False
 lock = threading.Lock()
 atuadores = Montagem()
 
@@ -28,8 +27,6 @@ def obterPosicaoAstro(name):
 
 
 def iniciar_rastreamento():
-    global rastreamento_ativo
-
     name = posicao_alvo.get("name")
 
     posicao = obterPosicaoAstro(name)
@@ -39,14 +36,13 @@ def iniciar_rastreamento():
         ra = posicao.get("hourAngle-dd")
 
     if ra is not None and dec is not None:
-        # print(f"Movendo para Ra: {ra}, Dec: {dec}")
+        print(f"Movendo para Hh: {ra}, Dec: {dec}")
         atuadores.apontar(dec, ra)
 
 
 @app.route('/apontar', methods=['POST'])
 def apontar():
     print(f"LOG: /apontar {request.json}")
-    global rastreamento_ativo
     data = request.json
     name = data.get('name')
 
@@ -56,11 +52,9 @@ def apontar():
     with lock:
         posicao_alvo["name"] = name
 
-    if not rastreamento_ativo:
-        rastreamento_ativo = True
-        t = threading.Thread(target=iniciar_rastreamento)
-        t.daemon = True
-        t.start()
+    t = threading.Thread(target=iniciar_rastreamento)
+    t.daemon = True
+    t.start()
 
     return {"status": "Rastreamento iniciado ou atualizado"}, 200
 

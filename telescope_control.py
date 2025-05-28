@@ -7,13 +7,14 @@ from domain.montagem import Montagem
 
 atuadores = Montagem()
 
-
-def start_stellarium_receiver(host='localhost', port=10001):
+def start_stellarium_receiver(host='0.0.0.0', port=10000):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
         s.bind((host, port))
         s.listen(1)
 
+        print("Iniciado")
         while True:
             try:
                 conn, addr = s.accept()
@@ -37,10 +38,10 @@ def start_stellarium_receiver(host='localhost', port=10001):
                             dec_deg = dec * (180.0 / np.pi)
                             hour_angle = aritmetica.ra_to_hour_angle(ra_deg)
 
-                            print(aritmetica.ra_to_hour_angle(ra_deg))
+                            print("Hh: ", aritmetica.ra_to_hour_angle(ra_deg), "Dec: ", dec_deg)
 
                             if ra_deg and dec_deg:
-                                # atuadores.apontar(dec_deg, hour_angle)
+                                atuadores.apontar(dec_deg, hour_angle)
                                 pass
 
                             else:
@@ -58,7 +59,7 @@ def start_stellarium_receiver(host='localhost', port=10001):
 
 
 if __name__ == "__main__":
-    HOST = 'localhost'
-    PORT = 10001
+    HOST = '0.0.0.0'
+    PORT = 10000
 
     start_stellarium_receiver(HOST, PORT)
