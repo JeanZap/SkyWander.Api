@@ -44,17 +44,20 @@ class Montagem:
         decPassosRestantes, raPassosRestantes = self.diferenca_posicao_alvo(
             decAlvo, raAlvo)
 
+        print(decPassosRestantes, raPassosRestantes)
         t1 = threading.Thread(target=self._mover_motor,
                               args=(self.motorDec, decPassosRestantes))
         t2 = threading.Thread(target=self._mover_motor,
                               args=(self.motorRa, raPassosRestantes))
 
+        print(raPassosRestantes)
         t1.start()
         t2.start()
 
         t1.join()
         t2.join()
 
+        print(raPassosRestantes)
         self.posicao = {"dec": decAlvo, "ra": raAlvo,
                         "decPassos": decAlvoPassos, "raPassos": raAlvoPassos}
 
@@ -67,9 +70,9 @@ class Montagem:
             clockwise=sentido,
             steptype=conf.TIPO_PASSO,
             steps=abs(passos),
-            stepdelay=0.001,
+            stepdelay=conf.STEP_DELAY,
             verbose=False,
-            initdelay=0.5
+            initdelay=conf.INIT_STEP_DELAY,
         )
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
@@ -94,6 +97,7 @@ class Montagem:
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
+            print(passos_ra)
             if passos_ra != 0:
                 self._mover_motor(self.motorRa, passos_ra)
                 self.posicao["ra"] += movimento_ra
