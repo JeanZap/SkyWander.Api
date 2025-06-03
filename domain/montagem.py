@@ -4,15 +4,22 @@ from RpiMotorLib.RpiMotorLib import A4988Nema
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
-import datetime
 import time
 
 
 class Montagem:
-    posicaoInicial = {"dec": 0, "ra": 90, "decPassos": 0,
-                      "raPassos": aritmetica.converter_angulo_para_passos(90)}
-    posicao = {"dec": 0, "ra": 90, "decPassos": 0,
-               "raPassos": aritmetica.converter_angulo_para_passos(90)}
+    posicaoInicial = {
+        "dec": 0,
+        "ra": 90,
+        "decPassos": 0,
+        "raPassos": aritmetica.converter_angulo_para_passos(90),
+    }
+    posicao = {
+        "dec": 0,
+        "ra": 90,
+        "decPassos": 0,
+        "raPassos": aritmetica.converter_angulo_para_passos(90),
+    }
     tracking_ativo = False
     taxa_sideral = 0.004178
     ultimo_tempo_tracking = None
@@ -21,9 +28,11 @@ class Montagem:
         GPIO.setmode(GPIO.BCM)
 
         self.motorDec = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (True, True, True), "A4988")
+            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (True, True, True), "A4988"
+        )
         self.motorRa = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (True, True, True), "A4988")
+            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (True, True, True), "A4988"
+        )
 
         self._homing()
 
@@ -42,24 +51,30 @@ class Montagem:
         raAlvoPassos = aritmetica.converter_angulo_para_passos(raAlvo)
 
         decPassosRestantes, raPassosRestantes = self.diferenca_posicao_alvo(
-            decAlvo, raAlvo)
+            decAlvo, raAlvo
+        )
 
-        print(decPassosRestantes, raPassosRestantes)
-        t1 = threading.Thread(target=self._mover_motor,
-                              args=(self.motorDec, decPassosRestantes))
-        t2 = threading.Thread(target=self._mover_motor,
-                              args=(self.motorRa, raPassosRestantes))
+        print(decPassosRestantes, raPassosRestantes, time.time())
+        t1 = threading.Thread(
+            target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
+        )
+        t2 = threading.Thread(
+            target=self._mover_motor, args=(self.motorRa, raPassosRestantes)
+        )
 
-        print(raPassosRestantes)
         t1.start()
         t2.start()
 
         t1.join()
         t2.join()
 
-        print(raPassosRestantes)
-        self.posicao = {"dec": decAlvo, "ra": raAlvo,
-                        "decPassos": decAlvoPassos, "raPassos": raAlvoPassos}
+        print(raPassosRestantes, time.time())
+        self.posicao = {
+            "dec": decAlvo,
+            "ra": raAlvo,
+            "decPassos": decAlvoPassos,
+            "raPassos": raAlvoPassos,
+        }
 
         self.iniciar_tracking()
 
@@ -77,9 +92,11 @@ class Montagem:
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
         dec = aritmetica.converter_angulo_para_passos(
-            dec) - aritmetica.converter_angulo_para_passos(self.posicao["dec"])
+            dec
+        ) - aritmetica.converter_angulo_para_passos(self.posicao["dec"])
         ra = aritmetica.converter_angulo_para_passos(
-            ra) - aritmetica.converter_angulo_para_passos(self.posicao["ra"])
+            ra
+        ) - aritmetica.converter_angulo_para_passos(self.posicao["ra"])
         return dec, ra
 
     def iniciar_tracking(self):
@@ -97,7 +114,6 @@ class Montagem:
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
-            print(passos_ra)
             if passos_ra != 0:
                 self._mover_motor(self.motorRa, passos_ra)
                 self.posicao["ra"] += movimento_ra
