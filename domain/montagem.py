@@ -5,6 +5,7 @@ import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
 import datetime
+import time
 
 
 class Montagem:
