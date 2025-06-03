@@ -4,7 +4,7 @@ from RpiMotorLib.RpiMotorLib import A4988Nema
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
-import time
+import datetime
 
 
 class Montagem:
@@ -54,7 +54,7 @@ class Montagem:
             decAlvo, raAlvo
         )
 
-        print(decPassosRestantes, raPassosRestantes, time.time())
+        print(decPassosRestantes, raPassosRestantes, datetime.datetime.now())
         t1 = threading.Thread(
             target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
         )
@@ -68,7 +68,7 @@ class Montagem:
         t1.join()
         t2.join()
 
-        print(raPassosRestantes, time.time())
+        print(raPassosRestantes, datetime.datetime.now())
         self.posicao = {
             "dec": decAlvo,
             "ra": raAlvo,
