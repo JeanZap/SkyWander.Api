@@ -13,7 +13,7 @@ while True:
     motorDec.motor_go(
             clockwise=True,
             steptype=conf.TIPO_PASSO,
-            steps=1800*16,
+            steps=1800,
             stepdelay=0.001,
             verbose=False,
             initdelay=0.5
@@ -21,7 +21,7 @@ while True:
     motorRa.motor_go(
             clockwise=True,
             steptype=conf.TIPO_PASSO,
-            steps=1800,
+            steps=1800*16,
             stepdelay=0.001,
             verbose=False,
             initdelay=0.5
@@ -31,7 +31,7 @@ while True:
     motorDec.motor_go(
             clockwise=False,
             steptype=conf.TIPO_PASSO,
-            steps=1800*16,
+            steps=1800,
             stepdelay=0.001,
             verbose=False,
             initdelay=0.5
@@ -39,7 +39,7 @@ while True:
     motorRa.motor_go(
             clockwise=False,
             steptype=conf.TIPO_PASSO,
-            steps=1800,
+            steps=1800*16,
             stepdelay=0.001,
             verbose=False,
             initdelay=0.5
