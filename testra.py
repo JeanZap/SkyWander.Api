@@ -2,4 +2,4 @@ from domain.montagem import Montagem
 
 atuadores = Montagem()
 
-atuadores.apontar(-180, 180)
+atuadores.apontar(0, 0)
