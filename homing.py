@@ -16,7 +16,7 @@ while True:
         clockwise=True,
         steptype=conf.TIPO_PASSO,
         steps=18000,
-        stepdelay=0.001,
+        stepdelay=0.01,
         verbose=False,
         initdelay=0.5,
     )
@@ -24,7 +24,7 @@ while True:
         clockwise=True,
         steptype=conf.TIPO_PASSO,
         steps=18000,
-        stepdelay=0.001,
+        stepdelay=0.01,
         verbose=False,
         initdelay=0.5,
     )
