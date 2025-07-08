@@ -11,15 +11,15 @@ import time
 class Montagem:
     posicaoInicial = {
         "dec": -90,
-        "ra": 90,
+        "ra": 0,
         "decPassos": aritmetica.converter_angulo_para_passos(-90),
-        "raPassos": aritmetica.converter_angulo_para_passos(90),
+        "raPassos": aritmetica.converter_angulo_para_passos(0),
     }
     posicao = {
         "dec": -90,
-        "ra": 90,
+        "ra": 0,
         "decPassos": aritmetica.converter_angulo_para_passos(-90),
-        "raPassos": aritmetica.converter_angulo_para_passos(90),
+        "raPassos": aritmetica.converter_angulo_para_passos(0),
     }
     tracking_ativo = False
     taxa_sideral = 0.004178
