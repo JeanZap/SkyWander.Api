@@ -40,12 +40,7 @@ def start_stellarium_receiver(host='0.0.0.0', port=10000):
 
                             print("Dec: ", dec_deg, "Hh: ", aritmetica.ra_to_hour_angle(ra_deg))
 
-                            if ra_deg and dec_deg:
-                                atuadores.apontar(dec_deg, hour_angle)
-                                pass
-
-                            else:
-                                print("Dados recebidos não contêm RA e DEC")
+                            atuadores.apontar(dec_deg, hour_angle)
 
                         except json.JSONDecodeError:
                             print("Dados recebidos não são JSON válido:", data)
