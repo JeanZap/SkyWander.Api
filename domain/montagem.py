@@ -55,7 +55,7 @@ class Montagem:
             decAlvo, raAlvo
         )
 
-        print(decPassosRestantes, raPassosRestantes, datetime.datetime.now())
+        print("Dec: ", decPassosRestantes, "Hh: ", raPassosRestantes, datetime.datetime.now())
         t1 = threading.Thread(
             target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
         )
@@ -69,7 +69,6 @@ class Montagem:
         t1.join()
         t2.join()
 
-        print(raPassosRestantes, datetime.datetime.now())
         self.posicao = {
             "dec": decAlvo,
             "ra": raAlvo,

@@ -38,7 +38,7 @@ def start_stellarium_receiver(host='0.0.0.0', port=10000):
                             dec_deg = dec * (180.0 / np.pi)
                             hour_angle = aritmetica.ra_to_hour_angle(ra_deg)
 
-                            print("Hh: ", aritmetica.ra_to_hour_angle(ra_deg), "Dec: ", dec_deg)
+                            print("Dec: ", dec_deg, "Hh: ", aritmetica.ra_to_hour_angle(ra_deg))
 
                             if ra_deg and dec_deg:
                                 atuadores.apontar(dec_deg, hour_angle)
