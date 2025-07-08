@@ -10,15 +10,15 @@ import time
 
 class Montagem:
     posicaoInicial = {
-        "dec": 0,
+        "dec": -90,
         "ra": 90,
-        "decPassos": 0,
+        "decPassos": aritmetica.converter_angulo_para_passos(-90),
         "raPassos": aritmetica.converter_angulo_para_passos(90),
     }
     posicao = {
-        "dec": 0,
+        "dec": -90,
         "ra": 90,
-        "decPassos": 0,
+        "decPassos": aritmetica.converter_angulo_para_passos(-90),
         "raPassos": aritmetica.converter_angulo_para_passos(90),
     }
     tracking_ativo = False
