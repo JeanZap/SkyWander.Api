@@ -79,7 +79,7 @@ class Montagem:
         self.iniciar_tracking()
 
     def _mover_motor(self, motor: A4988Nema, passos: int):
-        sentido = passos < 0
+        sentido = passos > 0
 
         motor.motor_go(
             clockwise=sentido,
