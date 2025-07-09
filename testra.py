@@ -1,7 +1,4 @@
-import RPi.GPIO as GPIO
-import time
 from RpiMotorLib import RpiMotorLib
-from RpiMotorLib.RpiMotorLib import A4988Nema
 import shared.configuracao as conf
 
 
