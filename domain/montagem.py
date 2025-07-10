@@ -107,8 +107,13 @@ class Montagem:
         return dec, ra
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
-        dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"], dec)
-        ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"], ra)
+        offset = 0
+
+        if ra < 180:
+            offset = -180
+
+        dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"] + offset, dec)
+        ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"] + offset, ra)
         return dec, ra
 
     def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
