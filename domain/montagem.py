@@ -10,15 +10,15 @@ import time
 
 class Montagem:
     posicaoInicial = {
-        "dec": -90,
+        "dec": 0,
         "ra": 0,
-        "decPassos": aritmetica.converter_angulo_para_passos(-90),
+        "decPassos": aritmetica.converter_angulo_para_passos(0),
         "raPassos": aritmetica.converter_angulo_para_passos(0),
     }
     posicao = {
-        "dec": -90,
+        "dec": 0,
         "ra": 0,
-        "decPassos": aritmetica.converter_angulo_para_passos(-90),
+        "decPassos": aritmetica.converter_angulo_para_passos(0),
         "raPassos": aritmetica.converter_angulo_para_passos(0),
     }
     tracking_ativo = False
@@ -55,8 +55,13 @@ class Montagem:
             decAlvo, raAlvo
         )
 
-        print("Dec: ", decPassosRestantes, "Hh: ",
-              raPassosRestantes, datetime.datetime.now())
+        print(
+            "Dec: ",
+            decPassosRestantes,
+            "Hh: ",
+            raPassosRestantes,
+            datetime.datetime.now(),
+        )
         t1 = threading.Thread(
             target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
         )
