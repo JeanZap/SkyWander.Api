@@ -55,7 +55,8 @@ class Montagem:
             decAlvo, raAlvo
         )
 
-        print("Dec: ", decPassosRestantes, "Hh: ", raPassosRestantes, datetime.datetime.now())
+        print("Dec: ", decPassosRestantes, "Hh: ",
+              raPassosRestantes, datetime.datetime.now())
         t1 = threading.Thread(
             target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
         )
@@ -91,13 +92,14 @@ class Montagem:
         )
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
-        dec = aritmetica.converter_angulo_para_passos(
-            dec
-        ) - aritmetica.converter_angulo_para_passos(self.posicao["dec"])
-        ra = aritmetica.converter_angulo_para_passos(
-            ra
-        ) - aritmetica.converter_angulo_para_passos(self.posicao["ra"])
+        dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"], dec)
+        ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"], ra)
         return dec, ra
+
+    def diferenca_posicao_alvo_eixo(self, anguloAtual: float, anguloAlvo: float):
+        diferenca = aritmetica.calcular_diferenca_angular(
+            anguloAtual, anguloAlvo)
+        return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self):
         self.tracking_ativo = True

@@ -29,3 +29,17 @@ def ra_to_hour_angle(ra_graus):
     ha_graus = ha.to(u.deg)
 
     return ha_graus.wrap_at(360 * u.deg).value
+
+
+def calcular_diferenca_angular(atual: float, destino: float) -> float:
+    atual = atual % 360
+    destino = destino % 360
+
+    diferenca = destino - atual
+
+    if diferenca > 180:
+        diferenca -= 360
+    elif diferenca < -180:
+        diferenca += 360
+
+    return diferenca
