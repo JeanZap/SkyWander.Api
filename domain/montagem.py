@@ -63,7 +63,7 @@ class Montagem:
             datetime.datetime.now(),
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(self.motorDec, decPassosRestantes, True)
+            target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
         )
         t2 = threading.Thread(
             target=self._mover_motor, args=(self.motorRa, raPassosRestantes)
@@ -84,11 +84,8 @@ class Montagem:
 
         self.iniciar_tracking()
 
-    def _mover_motor(self, motor: A4988Nema, passos: int, inverter: bool = False):
+    def _mover_motor(self, motor: A4988Nema, passos: int):
         sentido = passos > 0
-
-        if inverter:
-            sentido = passos < 0
 
         motor.motor_go(
             clockwise=sentido,
