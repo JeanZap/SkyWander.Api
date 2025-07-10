@@ -28,10 +28,10 @@ class Montagem:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
-        self.motorDec = RpiMotorLib.A4988Nema(
+        self.motor_dec = RpiMotorLib.A4988Nema(
             conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
         )
-        self.motorRa = RpiMotorLib.A4988Nema(
+        self.motor_ra = RpiMotorLib.A4988Nema(
             conf.DIR_PIN_RA, conf.STEP_PIN_RA, (False, False, False), "A4988"
         )
 
@@ -43,30 +43,33 @@ class Montagem:
 
     def mover_home(self):
         self._parar_tracking()
-        self.apontar(self, 0, 90)
+        self.apontar(0, 0)
 
-    def apontar(self, decAlvo: float, raAlvo: float):
+    def apontar(self, dec_alvo: float, ra_alvo: float):
         self._parar_tracking()
 
-        decAlvoPassos = aritmetica.converter_angulo_para_passos(decAlvo)
-        raAlvoPassos = aritmetica.converter_angulo_para_passos(raAlvo)
+        dec_alvo_passos = aritmetica.converter_angulo_para_passos(dec_alvo)
+        ra_alvo_passos = aritmetica.converter_angulo_para_passos(ra_alvo)
 
-        decPassosRestantes, raPassosRestantes = self.diferenca_posicao_alvo(
-            decAlvo, raAlvo
+        dec_alvo_protegido, ra_alvo_protegido = self.converter_angulos_protegidos(
+            dec_alvo, ra_alvo
+        )
+        dec_passos_restantes, ra_passos_restantes = self.diferenca_posicao_alvo(
+            dec_alvo_protegido, ra_alvo_protegido
         )
 
         print(
             "Dec: ",
-            decPassosRestantes,
+            dec_passos_restantes,
             "Hh: ",
-            raPassosRestantes,
+            ra_passos_restantes,
             datetime.datetime.now(),
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(self.motorDec, decPassosRestantes)
+            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
         )
         t2 = threading.Thread(
-            target=self._mover_motor, args=(self.motorRa, raPassosRestantes)
+            target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
         )
 
         t1.start()
@@ -76,10 +79,10 @@ class Montagem:
         t2.join()
 
         self.posicao = {
-            "dec": decAlvo,
-            "ra": raAlvo,
-            "decPassos": decAlvoPassos,
-            "raPassos": raAlvoPassos,
+            "dec": dec_alvo,
+            "ra": ra_alvo,
+            "decPassos": dec_alvo_passos,
+            "raPassos": ra_alvo_passos,
         }
 
         self.iniciar_tracking()
@@ -96,14 +99,20 @@ class Montagem:
             initdelay=conf.INIT_STEP_DELAY,
         )
 
+    def converter_angulos_protegidos(self, dec: float, ra: float):
+        if ra < 180:
+            dec -= 180
+            ra -= 180
+
+        return dec, ra
+
     def diferenca_posicao_alvo(self, dec: float, ra: float):
         dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"], dec)
         ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"], ra)
         return dec, ra
 
-    def diferenca_posicao_alvo_eixo(self, anguloAtual: float, anguloAlvo: float):
-        diferenca = aritmetica.calcular_diferenca_angular(
-            anguloAtual, anguloAlvo)
+    def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
+        diferenca = aritmetica.calcular_diferenca_angular(angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self):
@@ -122,7 +131,7 @@ class Montagem:
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
             if passos_ra != 0:
-                self._mover_motor(self.motorRa, passos_ra)
+                self._mover_motor(self.motor_ra, passos_ra)
                 self.posicao["ra"] += movimento_ra
                 self.posicao["raPassos"] += passos_ra
 
