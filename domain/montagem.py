@@ -99,9 +99,12 @@ class Montagem:
             initdelay=conf.INIT_STEP_DELAY,
         )
 
+    def deve_proteger(self, ra: float):
+        return False
+        return ra < 180
+
     def converter_angulos_protegidos(self, dec: float, ra: float):
-        return dec, ra
-        if ra < 180:
+        if self.deve_proteger(ra):
             dec -= 180
             ra -= 180
 
@@ -110,7 +113,7 @@ class Montagem:
     def diferenca_posicao_alvo(self, dec: float, ra: float):
         offset = 0
 
-        if ra < 180:
+        if self.deve_proteger(ra):
             offset = -180
 
         dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"] + offset, dec)
