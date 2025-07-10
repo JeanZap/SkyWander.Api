@@ -84,7 +84,7 @@ class Montagem:
 
         self.iniciar_tracking()
 
-    def _mover_motor(self, motor: A4988Nema, passos: int, inverter: bool):
+    def _mover_motor(self, motor: A4988Nema, passos: int, inverter: bool = False):
         sentido = passos > 0
 
         if inverter:
