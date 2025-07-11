@@ -65,18 +65,18 @@ class Montagem:
             ra_alvo_protegido,
             " - protegido",
         )
-        t1 = threading.Thread(
-            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
-        )
-        t2 = threading.Thread(
-            target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
-        )
+        # t1 = threading.Thread(
+        #     target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
+        # )
+        # t2 = threading.Thread(
+        #     target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
+        # )
 
-        t1.start()
-        t2.start()
+        # t1.start()
+        # t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
 
         self.posicao = {
             "dec": dec_alvo_protegido,
