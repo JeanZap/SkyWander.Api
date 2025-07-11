@@ -129,11 +129,11 @@ class Montagem:
     def iniciar_tracking(self):
         self.tracking_ativo = True
         self.ultimo_tempo_tracking = time.time()
+        print('tracking')
         threading.Thread(target=self._tracking_loop, daemon=True).start()
 
     def _tracking_loop(self):
         while self.tracking_ativo:
-            print('tracking')
             agora = time.time()
             tempo_decorrido = agora - self.ultimo_tempo_tracking
             self.ultimo_tempo_tracking = agora
