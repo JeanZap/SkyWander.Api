@@ -7,6 +7,15 @@ motorRa = RpiMotorLib.A4988Nema(
 )
 
 motorRa.motor_go(
+    clockwise=False,
+    steptype=conf.TIPO_PASSO,
+    steps=18000,
+    stepdelay=0.001,
+    verbose=False,
+    initdelay=0.5,
+)
+
+motorRa.motor_go(
     clockwise=True,
     steptype=conf.TIPO_PASSO,
     steps=18000,
