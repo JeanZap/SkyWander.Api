@@ -24,7 +24,6 @@ class Montagem:
     tracking_ativo = False
     taxa_sideral = 0.004178
     ultimo_tempo_tracking = None
-    esta_espelhado = False
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -101,13 +100,16 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
-        return (ra > 180) != self.esta_espelhado
+        return ra > 0 and ra <= 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
             dec = -dec
-            ra = (ra + 180) % 360
-            self.esta_espelhado = not self.esta_espelhado
+            dec += 180
+            dec %= 360
+
+            ra += 180
+            ra %= 360
 
         return dec, ra
 
@@ -136,13 +138,12 @@ class Montagem:
             self.ultimo_tempo_tracking = agora
 
             movimento_ra = self.taxa_sideral * tempo_decorrido
-            if self.esta_espelhado:
-                movimento_ra *= -1  # Reverse tracking direction after flip
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
+
             if passos_ra != 0:
                 self._mover_motor(self.motor_ra, passos_ra)
-                self.posicao["ra"] = (self.posicao["ra"] + movimento_ra) % 360
+                self.posicao["ra"] += movimento_ra
                 self.posicao["raPassos"] += passos_ra
 
             time.sleep(conf.DELAY_ATUALIZACAO)
