@@ -100,6 +100,7 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
+        return False
         return ra > 0 and ra <= 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
