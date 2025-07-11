@@ -100,6 +100,7 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
+        return False
         ra %= 360
         return ra > 90 and ra < 270
 
