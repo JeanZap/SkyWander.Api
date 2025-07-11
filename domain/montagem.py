@@ -133,6 +133,7 @@ class Montagem:
 
     def _tracking_loop(self):
         while self.tracking_ativo:
+            print('tracking')
             agora = time.time()
             tempo_decorrido = agora - self.ultimo_tempo_tracking
             self.ultimo_tempo_tracking = agora
