@@ -101,7 +101,7 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
-        return ra > 90 and ra <= 270
+        return ra > 0 and ra <= 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
