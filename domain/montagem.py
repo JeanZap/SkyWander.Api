@@ -114,7 +114,7 @@ class Montagem:
     def diferenca_posicao_alvo(self, dec: float, ra: float):
         offset = 0
 
-        if self.deve_proteger(ra):
+        if self.deve_proteger(self.posicao["ra"]):
             offset = +180
 
         dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"] + offset, dec)
