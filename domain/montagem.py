@@ -60,10 +60,10 @@ class Montagem:
 
         print(
             "Dec: ",
-            dec_passos_restantes,
+            dec_alvo_protegido,
             "Hh: ",
-            ra_passos_restantes,
-            datetime.datetime.now(),
+            ra_alvo_protegido,
+            " - protegido",
         )
         t1 = threading.Thread(
             target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
@@ -100,13 +100,12 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
-        return False
         return ra < 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
-            dec -= 180
-            ra -= 180
+            dec += 180
+            ra += 180
 
         return dec, ra
 
@@ -114,7 +113,7 @@ class Montagem:
         offset = 0
 
         if self.deve_proteger(ra):
-            offset = -180
+            offset = +180
 
         dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"] + offset, dec)
         ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"] + offset, ra)
