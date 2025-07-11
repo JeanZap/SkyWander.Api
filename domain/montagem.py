@@ -107,7 +107,6 @@ class Montagem:
             dec += 180
             ra += 180
 
-        dec %= 360
         ra %= 360
 
         return dec, ra
