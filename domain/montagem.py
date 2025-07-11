@@ -104,8 +104,8 @@ class Montagem:
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
-            dec -= 180
-            ra -= 180
+            dec += 180
+            ra += 180
 
         dec %= 360
         ra %= 360
@@ -116,7 +116,7 @@ class Montagem:
         offset = 0
 
         if self.deve_proteger(ra):
-            offset = -180
+            offset = +180
 
         dec = self.diferenca_posicao_alvo_eixo(self.posicao["dec"] + offset, dec)
         ra = self.diferenca_posicao_alvo_eixo(self.posicao["ra"] + offset, ra)
