@@ -24,6 +24,7 @@ class Montagem:
     tracking_ativo = False
     taxa_sideral = 0.004178
     ultimo_tempo_tracking = None
+    esta_espelhado = False
 
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
@@ -65,18 +66,18 @@ class Montagem:
             ra_alvo_protegido,
             " - protegido",
         )
-        # t1 = threading.Thread(
-        #     target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
-        # )
-        # t2 = threading.Thread(
-        #     target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
-        # )
+        t1 = threading.Thread(
+            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
+        )
+        t2 = threading.Thread(
+            target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
+        )
 
-        # t1.start()
-        # t2.start()
+        t1.start()
+        t2.start()
 
-        # t1.join()
-        # t2.join()
+        t1.join()
+        t2.join()
 
         self.posicao = {
             "dec": dec_alvo_protegido,
@@ -111,6 +112,10 @@ class Montagem:
             ra += 180
             ra %= 360
 
+            self.esta_espelhado = True
+        else:
+            self.esta_espelhado = False
+
         return dec, ra
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
@@ -129,7 +134,6 @@ class Montagem:
     def iniciar_tracking(self):
         self.tracking_ativo = True
         self.ultimo_tempo_tracking = time.time()
-        print('tracking')
         threading.Thread(target=self._tracking_loop, daemon=True).start()
 
     def _tracking_loop(self):
@@ -141,7 +145,9 @@ class Montagem:
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
-            print(passos_ra)
+            if self.esta_espelhado:
+                passos_ra *= -1
+
             if passos_ra != 0:
                 self.ultimo_tempo_tracking = agora
                 self._mover_motor(self.motor_ra, passos_ra)
