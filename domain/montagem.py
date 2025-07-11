@@ -117,7 +117,6 @@ class Montagem:
         ra_atual = self.posicao["ra"]
 
         if self.deve_proteger(self.posicao["ra"]):
-            dec_atual = -dec_atual
             ra_atual += 180
 
         dec = self.diferenca_posicao_alvo_eixo(dec_atual, dec)
