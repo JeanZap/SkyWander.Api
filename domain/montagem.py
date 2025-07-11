@@ -142,8 +142,8 @@ class Montagem:
 
             passos_ra = aritmetica.converter_angulo_para_passos(movimento_ra)
 
+            print(passos_ra)
             if passos_ra != 0:
-                print(passos_ra)
                 self._mover_motor(self.motor_ra, passos_ra)
                 self.posicao["ra"] += movimento_ra
                 self.posicao["raPassos"] += passos_ra
