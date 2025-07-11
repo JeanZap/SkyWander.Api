@@ -66,8 +66,7 @@ class Montagem:
             " - protegido",
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(
-                self.motor_dec, dec_passos_restantes)
+            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
         )
         t2 = threading.Thread(
             target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
@@ -113,21 +112,16 @@ class Montagem:
         return dec, ra
 
     def diferenca_posicao_alvo(self, dec: float, ra: float):
-        decAtual = self.posicao["dec"]
-        raAtual = self.posicao["ra"]
+        dec_atual = self.posicao["dec"]
+        ra_atual = self.posicao["ra"]
 
-        if self.deve_proteger(self.posicao["ra"]):
-            decAtual = -decAtual
-            raAtual += 180
-
-        dec = self.diferenca_posicao_alvo_eixo(decAtual, dec)
-        ra = self.diferenca_posicao_alvo_eixo(raAtual, ra)
+        dec = self.diferenca_posicao_alvo_eixo(dec_atual, dec)
+        ra = self.diferenca_posicao_alvo_eixo(ra_atual, ra)
 
         return dec, ra
 
     def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
-        diferenca = aritmetica.calcular_diferenca_angular(
-            angulo_atual, angulo_alvo)
+        diferenca = aritmetica.calcular_diferenca_angular(angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self):
