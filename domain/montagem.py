@@ -80,8 +80,8 @@ class Montagem:
         t2.join()
 
         self.posicao = {
-            "dec": dec_alvo,
-            "ra": ra_alvo,
+            "dec": dec_alvo_protegido,
+            "ra": ra_alvo_protegido,
             "decPassos": dec_alvo_passos,
             "raPassos": ra_alvo_passos,
         }
@@ -115,10 +115,6 @@ class Montagem:
     def diferenca_posicao_alvo(self, dec: float, ra: float):
         dec_atual = self.posicao["dec"]
         ra_atual = self.posicao["ra"]
-
-        if self.deve_proteger(self.posicao["ra"]):
-            dec_atual = -dec_atual
-            ra_atual += 180
 
         dec = self.diferenca_posicao_alvo_eixo(dec_atual, dec)
         ra = self.diferenca_posicao_alvo_eixo(ra_atual, ra)
