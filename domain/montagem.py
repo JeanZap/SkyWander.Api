@@ -9,7 +9,7 @@ import time
 
 
 class Montagem:
-    posicaoInicial = {
+    posicao_inicial = {
         "dec": 0,
         "ra": 0,
         "decPassos": aritmetica.converter_angulo_para_passos(0),
@@ -101,15 +101,13 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
-        return False
         return ra > 0 and ra <= 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
             dec = -dec
             ra += 180
-
-        ra %= 360
+            ra %= 360
 
         return dec, ra
 
