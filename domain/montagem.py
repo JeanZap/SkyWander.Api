@@ -136,7 +136,6 @@ class Montagem:
         while self.tracking_ativo:
             agora = time.time()
             tempo_decorrido = agora - self.ultimo_tempo_tracking
-            self.ultimo_tempo_tracking = agora
 
             movimento_ra = self.taxa_sideral * tempo_decorrido
 
@@ -144,6 +143,7 @@ class Montagem:
 
             print(passos_ra)
             if passos_ra != 0:
+                self.ultimo_tempo_tracking = agora
                 self._mover_motor(self.motor_ra, passos_ra)
                 self.posicao["ra"] += movimento_ra
                 self.posicao["raPassos"] += passos_ra
