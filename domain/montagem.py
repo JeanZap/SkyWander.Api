@@ -105,7 +105,6 @@ class Montagem:
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
-            dec = -dec
             dec += 180
             dec %= 360
 
