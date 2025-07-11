@@ -46,9 +46,6 @@ class Montagem:
         self.apontar(0, 0)
 
     def apontar(self, dec_alvo: float, ra_alvo: float):
-        if self.deve_proteger(ra_alvo):
-            return
-
         self._parar_tracking()
 
         dec_alvo_passos = aritmetica.converter_angulo_para_passos(dec_alvo)
@@ -103,7 +100,7 @@ class Montagem:
         )
 
     def deve_proteger(self, ra: float):
-        return ra > 90 and ra <= 270
+        return ra > 0 and ra <= 180
 
     def converter_angulos_protegidos(self, dec: float, ra: float):
         if self.deve_proteger(ra):
