@@ -74,14 +74,14 @@ class Montagem:
             )
             print(f"{nome} homing completo.")
 
-        t1 = threading.Thread(
-            target=homing_motor, args=(self.motor_dec, self.LIMIT_SWITCH_DEC,
-                                       dir_dec, "DEC", conf.OFFSET_DEC)
-        )
-        t2 = threading.Thread(
-            target=homing_motor, args=(self.motor_ra, self.LIMIT_SWITCH_RA,
-                                       dir_ra, "RA", conf.OFFSET_RA)
-        )
+        # t1 = threading.Thread(
+        #     target=homing_motor, args=(self.motor_dec, self.LIMIT_SWITCH_DEC,
+        #                                dir_dec, "DEC", conf.OFFSET_DEC)
+        # )
+        # t2 = threading.Thread(
+        #     target=homing_motor, args=(self.motor_ra, self.LIMIT_SWITCH_RA,
+        #                                dir_ra, "RA", conf.OFFSET_RA)
+        # )
 
         t1.start()
         t2.start()
