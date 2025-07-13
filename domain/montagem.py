@@ -28,8 +28,8 @@ class Montagem:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
-        GPIO.add_event_detect(conf.PIN_BUTTON_HOME, GPIO.FALLING,
-                              callback=self.mover_home, bouncetime=300)
+        # GPIO.add_event_detect(conf.PIN_BUTTON_HOME, GPIO.FALLING,
+        #                       callback=self.mover_home, bouncetime=300)
 
         # GPIO.setup(conf.LIMIT_SWITCH_DEC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
