@@ -44,7 +44,7 @@ class Montagem:
         self._homing()
 
     def _homing(self):
-        pass
+        return
         print("Iniciando homing...")
 
         dir_dec = True
