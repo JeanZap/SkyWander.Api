@@ -98,6 +98,8 @@ class Montagem:
     def apontar(self, dec_alvo: float, ra_alvo: float):
         self._parar_tracking()
 
+        inicio = time.time()
+
         dec_alvo_passos = aritmetica.converter_angulo_para_passos(dec_alvo)
         ra_alvo_passos = aritmetica.converter_angulo_para_passos(ra_alvo)
 
@@ -136,7 +138,10 @@ class Montagem:
             "raPassos": ra_alvo_passos,
         }
 
-        self.iniciar_tracking()
+        fim = time.time()
+        tempo_decorrido = fim - inicio
+
+        self.iniciar_tracking(tempo_decorrido)
 
     def _mover_motor(self, motor: A4988Nema, passos: int):
         sentido = passos > 0
@@ -182,9 +187,9 @@ class Montagem:
             angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
-    def iniciar_tracking(self):
+    def iniciar_tracking(self, tempo_offset: float = 0.0):
         self.tracking_ativo = True
-        self.ultimo_tempo_tracking = time.time()
+        self.ultimo_tempo_tracking = time.time() - tempo_offset
         threading.Thread(target=self._tracking_loop, daemon=True).start()
 
     def _tracking_loop(self):
