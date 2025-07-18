@@ -28,8 +28,10 @@ class Montagem:
     def __init__(self):
         GPIO.setmode(GPIO.BCM)
 
-        GPIO.add_event_detect(conf.PIN_BUTTON_HOME, GPIO.FALLING,
-                              callback=self.mover_home, bouncetime=300)
+        GPIO.setup(conf.PIN_BUTTON_HOME, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.add_event_detect(
+            conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
+        )
 
         GPIO.setup(conf.LIMIT_SWITCH_DEC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -44,50 +46,42 @@ class Montagem:
         self._homing()
 
     def _homing(self):
-        pass
+        return
         print("Iniciando homing...")
 
         dir_dec = True
         dir_ra = True
 
-        def homing_motor(motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: int):
+        def homing_motor(
+            motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: int
+        ):
             print(f"Homing motor {nome}...")
 
             while GPIO.input(limit_pin) == GPIO.HIGH:
                 motor.motor_go(
-                    direction,
-                    conf.TIPO_PASSO,
-                    1,
-                    conf.STEP_DELAY,
-                    False,
-                    0.0
+                    direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
                 )
             print(f"Switch {nome} pressionado. Recuando offset...")
 
             motor.motor_go(
-                not direction,
-                conf.TIPO_PASSO,
-                offset,
-                conf.STEP_DELAY,
-                False,
-                0.0
+                not direction, conf.TIPO_PASSO, offset, conf.STEP_DELAY, False, 0.0
             )
             print(f"{nome} homing completo.")
 
-        t1 = threading.Thread(
-            target=homing_motor, args=(self.motor_dec, self.LIMIT_SWITCH_DEC,
-                                       dir_dec, "DEC", conf.OFFSET_DEC)
-        )
-        t2 = threading.Thread(
-            target=homing_motor, args=(self.motor_ra, self.LIMIT_SWITCH_RA,
-                                       dir_ra, "RA", conf.OFFSET_RA)
-        )
+        # t1 = threading.Thread(
+        #     target=homing_motor, args=(self.motor_dec, self.LIMIT_SWITCH_DEC,
+        #                                dir_dec, "DEC", conf.OFFSET_DEC)
+        # )
+        # t2 = threading.Thread(
+        #     target=homing_motor, args=(self.motor_ra, self.LIMIT_SWITCH_RA,
+        #                                dir_ra, "RA", conf.OFFSET_RA)
+        # )
 
-        t1.start()
-        t2.start()
+        # t1.start()
+        # t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
 
         print("Homing finalizado.")
 
@@ -118,8 +112,7 @@ class Montagem:
             " - protegido",
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(
-                self.motor_dec, dec_passos_restantes)
+            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
         )
         t2 = threading.Thread(
             target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
@@ -183,8 +176,7 @@ class Montagem:
         return dec, ra
 
     def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
-        diferenca = aritmetica.calcular_diferenca_angular(
-            angulo_atual, angulo_alvo)
+        diferenca = aritmetica.calcular_diferenca_angular(angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self, tempo_offset: float = 0.0):
