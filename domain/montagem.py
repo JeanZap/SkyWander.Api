@@ -46,14 +46,13 @@ class Montagem:
         self._homing()
 
     def _homing(self):
-        return
         print("Iniciando homing...")
 
         dir_dec = True
         dir_ra = True
 
         def homing_motor(
-            motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: int
+            motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: float
         ):
             print(f"Homing motor {nome}...")
 
@@ -68,19 +67,19 @@ class Montagem:
             )
             print(f"{nome} homing completo.")
 
-        # t1 = threading.Thread(
-        #     target=homing_motor, args=(self.motor_dec, self.LIMIT_SWITCH_DEC,
-        #                                dir_dec, "DEC", conf.OFFSET_DEC)
-        # )
+        t1 = threading.Thread(
+            target=homing_motor, args=(self.motor_dec, conf.LIMIT_SWITCH_DEC,
+                                       dir_dec, "DEC", conf.OFFSET_DEC)
+        )
         # t2 = threading.Thread(
-        #     target=homing_motor, args=(self.motor_ra, self.LIMIT_SWITCH_RA,
+        #     target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
         #                                dir_ra, "RA", conf.OFFSET_RA)
         # )
 
-        # t1.start()
+        t1.start()
         # t2.start()
 
-        # t1.join()
+        t1.join()
         # t2.join()
 
         print("Homing finalizado.")
