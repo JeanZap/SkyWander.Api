@@ -54,6 +54,13 @@ class Montagem:
         def homing_motor(
             motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: float
         ):
+            print(f"Deixando posição de home {nome}...", GPIO.input(limit_pin))
+
+            while GPIO.input(limit_pin) == GPIO.HIGH:
+                motor.motor_go(
+                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
+                )
+
             print(f"Homing motor {nome}...", GPIO.input(limit_pin))
 
             while GPIO.input(limit_pin) == GPIO.LOW:
