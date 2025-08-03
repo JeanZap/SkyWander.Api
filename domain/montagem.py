@@ -54,9 +54,9 @@ class Montagem:
         def homing_motor(
             motor: A4988Nema, limit_pin: int, direction: bool, nome: str, offset: float
         ):
-            print(f"Homing motor {nome}...")
+            print(f"Homing motor {nome}...", GPIO.input(limit_pin))
 
-            while GPIO.input(limit_pin) == GPIO.HIGH:
+            while GPIO.input(limit_pin) == GPIO.LOW:
                 motor.motor_go(
                     direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
                 )
@@ -68,8 +68,14 @@ class Montagem:
             print(f"{nome} homing completo.")
 
         t1 = threading.Thread(
-            target=homing_motor, args=(self.motor_dec, conf.LIMIT_SWITCH_DEC,
-                                       dir_dec, "DEC", conf.OFFSET_DEC)
+            target=homing_motor,
+            args=(
+                self.motor_dec,
+                conf.LIMIT_SWITCH_DEC,
+                dir_dec,
+                "DEC",
+                conf.OFFSET_DEC,
+            ),
         )
         # t2 = threading.Thread(
         #     target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
