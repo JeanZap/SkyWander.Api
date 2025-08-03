@@ -63,7 +63,12 @@ class Montagem:
             print(f"Switch {nome} pressionado. Recuando offset...")
 
             motor.motor_go(
-                not direction, conf.TIPO_PASSO, offset, conf.STEP_DELAY, False, 0.0
+                not direction,
+                conf.TIPO_PASSO,
+                aritmetica.converter_angulo_para_passos(offset),
+                conf.STEP_DELAY,
+                False,
+                0.0,
             )
             print(f"{nome} homing completo.")
 
