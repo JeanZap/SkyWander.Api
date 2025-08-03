@@ -89,16 +89,16 @@ class Montagem:
                 conf.OFFSET_DEC,
             ),
         )
-        # t2 = threading.Thread(
-        #     target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
-        #                                dir_ra, "RA", conf.OFFSET_RA)
-        # )
+        t2 = threading.Thread(
+            target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
+                                       dir_ra, "RA", conf.OFFSET_RA)
+        )
 
         t1.start()
-        # t2.start()
+        t2.start()
 
         t1.join()
-        # t2.join()
+        t2.join()
 
         print("Homing finalizado.")
 
