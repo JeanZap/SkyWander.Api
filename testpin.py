@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 # Defina o número do pino que deseja usar
-PIN = 17  # você pode mudar para o pino desejado
+PIN = 20  # você pode mudar para o pino desejado
 
 # Configura o modo de numeração e o pino
 GPIO.setmode(GPIO.BCM)
