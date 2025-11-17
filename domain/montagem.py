@@ -104,7 +104,7 @@ class Montagem:
 
     def mover_home(self):
         self._parar_tracking()
-        self.apontar(0, 0)
+        self._homing()
 
     def apontar(self, dec_alvo: float, ra_alvo: float):
         self._parar_tracking()
@@ -129,7 +129,8 @@ class Montagem:
             " - protegido",
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
+            target=self._mover_motor, args=(
+                self.motor_dec, dec_passos_restantes)
         )
         t2 = threading.Thread(
             target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
@@ -193,7 +194,8 @@ class Montagem:
         return dec, ra
 
     def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
-        diferenca = aritmetica.calcular_diferenca_angular(angulo_atual, angulo_alvo)
+        diferenca = aritmetica.calcular_diferenca_angular(
+            angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self, tempo_offset: float = 0.0):
