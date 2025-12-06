@@ -81,7 +81,6 @@ class Montagem:
         homing_motor(
             self.motor_dec,
             conf.LIMIT_SWITCH_DEC,
-            dir_dec,
             "DEC",
             conf.OFFSET_DEC,
         )
@@ -89,7 +88,6 @@ class Montagem:
         homing_motor(
             self.motor_ra,
             conf.LIMIT_SWITCH_RA,
-            dir_ra,
             "RA",
             conf.OFFSET_RA,
         )
@@ -99,14 +97,13 @@ class Montagem:
         #     args=(
         #         self.motor_dec,
         #         conf.LIMIT_SWITCH_DEC,
-        #         dir_dec,
         #         "DEC",
         #         conf.OFFSET_DEC,
         #     ),
         # )
         # t2 = threading.Thread(
         #     target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
-        #                                dir_ra, "RA", conf.OFFSET_RA)
+        #                                "RA", conf.OFFSET_RA)
         # )
 
         # t1.start()
