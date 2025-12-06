@@ -3,7 +3,7 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
-PIN = 16  # GPIO que será lido
+PIN = 4  # GPIO que será lido
 
 # Se não tiver resistor externo, use pull-up ou pull-down
 GPIO.setup(PIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
