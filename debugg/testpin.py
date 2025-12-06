@@ -12,8 +12,8 @@ print(f"Pino {PIN} está em HIGH. Pressione Ctrl + C para encerrar.")
 
 try:
     # Mantém o pino em HIGH até o programa ser interrompido
-    GPIO.output(PIN, GPIO.HIGH)
     while True:
+        GPIO.output(PIN, GPIO.HIGH)
         time.sleep(1)
 
 except KeyboardInterrupt:
