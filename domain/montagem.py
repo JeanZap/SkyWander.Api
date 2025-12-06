@@ -56,14 +56,14 @@ class Montagem:
         ):
             print(f"Deixando posição de home {nome}...", GPIO.input(limit_pin))
 
-            while GPIO.input(limit_pin) == GPIO.HIGH:
+            while GPIO.input(limit_pin) == GPIO.LOW:
                 motor.motor_go(
-                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
+                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, True, 0.0
                 )
 
             print(f"Homing motor {nome}...", GPIO.input(limit_pin))
 
-            while GPIO.input(limit_pin) == GPIO.LOW:
+            while GPIO.input(limit_pin) == GPIO.HIGH:
                 motor.motor_go(
                     direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
                 )
