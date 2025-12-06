@@ -37,10 +37,10 @@ class Montagem:
         GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         self.motor_dec = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
+            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (True, True, True), "A4988"
         )
         self.motor_ra = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (False, False, False), "A4988"
+            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (True, True, True), "A4988"
         )
 
         self._homing()
