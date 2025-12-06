@@ -58,14 +58,14 @@ class Montagem:
 
             while GPIO.input(limit_pin) == GPIO.LOW:
                 motor.motor_go(
-                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, True, 0.0
+                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
                 )
 
             print(f"Homing motor {nome}...", GPIO.input(limit_pin))
 
             while GPIO.input(limit_pin) == GPIO.HIGH:
                 motor.motor_go(
-                    direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
+                    direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, True, 0.0
                 )
             print(f"Switch {nome} pressionado. Recuando offset...")
 
@@ -74,7 +74,7 @@ class Montagem:
                 conf.TIPO_PASSO,
                 aritmetica.converter_angulo_para_passos(offset),
                 conf.STEP_DELAY,
-                False,
+                True,
                 0.0,
             )
             print(f"{nome} homing completo.")
