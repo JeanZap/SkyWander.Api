@@ -37,10 +37,10 @@ class Montagem:
         GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
         self.motor_dec = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (True, True, True), "A4988"
+            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
         )
         self.motor_ra = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (True, True, True), "A4988"
+            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (False, False, False), "A4988"
         )
 
         self._homing()
@@ -58,7 +58,7 @@ class Montagem:
 
             while GPIO.input(limit_pin) == GPIO.HIGH:
                 motor.motor_go(
-                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, True, 0.0
+                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
                 )
 
             print(f"Homing motor {nome}...", GPIO.input(limit_pin))
@@ -80,7 +80,8 @@ class Montagem:
             print(f"{nome} homing completo.")
 
         t1 = threading.Thread(
-            target=homing_motor(
+            target=homing_motor,
+            args=(
                 self.motor_dec,
                 conf.LIMIT_SWITCH_DEC,
                 dir_dec,
@@ -177,7 +178,7 @@ class Montagem:
             ra += 180
             ra %= 360
 
-            self.esta_espelhado = False
+            self.esta_espelhado = True
         else:
             self.esta_espelhado = False
 
