@@ -33,8 +33,8 @@ class Montagem:
             conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
         )
 
-        GPIO.setup(conf.LIMIT_SWITCH_DEC, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(conf.LIMIT_SWITCH_DEC, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         self.motor_dec = RpiMotorLib.A4988Nema(
             conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
