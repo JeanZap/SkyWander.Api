@@ -79,26 +79,15 @@ class Montagem:
             )
             print(f"{nome} homing completo.")
 
-        t1 = threading.Thread(
-            target=homing_motor,
-            args=(
+
+        homing_motor(
                 self.motor_dec,
                 conf.LIMIT_SWITCH_DEC,
                 dir_dec,
                 "DEC",
-                conf.OFFSET_DEC,
-            ),
-        )
-        t2 = threading.Thread(
-            target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
+                conf.OFFSET_DEC)
+        homing_motor(self.motor_ra, conf.LIMIT_SWITCH_RA,
                                        dir_ra, "RA", conf.OFFSET_RA)
-        )
-
-        t1.start()
-        t2.start()
-
-        t1.join()
-        t2.join()
 
         print("Homing finalizado.")
 
