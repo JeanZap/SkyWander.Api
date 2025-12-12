@@ -1,6 +1,7 @@
 import RPi.GPIO as GPIO
 from RpiMotorLib import RpiMotorLib
 from RpiMotorLib.RpiMotorLib import A4988Nema
+from domain.atuador import Atuador
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
@@ -33,74 +34,19 @@ class Montagem:
             conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
         )
 
-        GPIO.setup(conf.LIMIT_SWITCH_DEC, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-        GPIO.setup(conf.LIMIT_SWITCH_RA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
-        self.motor_dec = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
-        )
-        self.motor_ra = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_RA, conf.STEP_PIN_RA, (False, False, False), "A4988"
-        )
+        self.motor_dec = Atuador(conf.LIMIT_SWITCH_DEC, "Dec", conf.OFFSET_DEC)
+        self.motor_ra = Atuador(conf.LIMIT_SWITCH_RA, "Ra", conf.OFFSET_RA)
 
         self._homing()
 
     def _homing(self):
         print("Iniciando homing...")
 
-        def homing_motor(motor: A4988Nema, limit_pin: int, nome: str, offset: float):
-            print(f"Deixando posição de home {nome}...", GPIO.input(limit_pin))
-            direction = True
-
-            while GPIO.input(limit_pin) == GPIO.HIGH:
-                motor.motor_go(
-                    not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
-                )
-
-            print(f"Homing motor {nome}...", GPIO.input(limit_pin))
-
-            while GPIO.input(limit_pin) == GPIO.LOW:
-                motor.motor_go(
-                    direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
-                )
-            print(f"Switch {nome} pressionado. Recuando offset...")
-
-            motor.motor_go(
-                not direction,
-                conf.TIPO_PASSO,
-                aritmetica.converter_angulo_para_passos(offset),
-                conf.STEP_DELAY,
-                False,
-                0.0,
-            )
-            print(f"{nome} homing completo.")
-
-        # homing_motor(
-        #     self.motor_dec,
-        #     conf.LIMIT_SWITCH_DEC,
-        #     "DEC",
-        #     conf.OFFSET_DEC,
-        # )
-
-        # homing_motor(
-        #     self.motor_ra,
-        #     conf.LIMIT_SWITCH_RA,
-        #     "RA",
-        #     conf.OFFSET_RA,
-        # )
-
         t1 = threading.Thread(
-            target=homing_motor,
-            args=(
-                self.motor_dec,
-                conf.LIMIT_SWITCH_DEC,
-                "DEC",
-                conf.OFFSET_DEC,
-            ),
+            target=self.motor_dec.homing_motor,
         )
         t2 = threading.Thread(
-            target=homing_motor, args=(self.motor_ra, conf.LIMIT_SWITCH_RA,
-                                       "RA", conf.OFFSET_RA)
+            target=self.motor_ra.homing_motor,
         )
 
         t1.start()
@@ -138,10 +84,10 @@ class Montagem:
             " - protegido",
         )
         t1 = threading.Thread(
-            target=self._mover_motor, args=(self.motor_dec, dec_passos_restantes)
+            target=self.motor_dec.mover_motor, args=(dec_passos_restantes)
         )
         t2 = threading.Thread(
-            target=self._mover_motor, args=(self.motor_ra, ra_passos_restantes)
+            target=self.motor_ra.mover_motor, args=(ra_passos_restantes)
         )
 
         t1.start()
@@ -161,18 +107,6 @@ class Montagem:
         tempo_decorrido = fim - inicio
 
         self.iniciar_tracking(tempo_decorrido)
-
-    def _mover_motor(self, motor: A4988Nema, passos: int):
-        sentido = passos < 0
-
-        motor.motor_go(
-            clockwise=sentido,
-            steptype=conf.TIPO_PASSO,
-            steps=abs(passos),
-            stepdelay=conf.STEP_DELAY,
-            verbose=False,
-            initdelay=conf.INIT_STEP_DELAY,
-        )
 
     def deve_proteger(self, ra: float):
         return ra > 0 and ra <= 180
@@ -224,7 +158,7 @@ class Montagem:
 
             if passos_ra != 0:
                 self.ultimo_tempo_tracking = agora
-                self._mover_motor(self.motor_ra, passos_ra)
+                self.motor_ra.mover_motor(passos_ra)
                 self.posicao["ra"] += movimento_ra
                 self.posicao["raPassos"] += passos_ra
 
