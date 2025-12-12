@@ -30,25 +30,26 @@ class Atuador:
     def homing_motor(self):
         direction = True
 
+        def asdf():
+            a = GPIO.input(self.limit_switch_pin)
+            return a
+
         print(
             f"1 - Recuando {self.nome}...",
             GPIO.input(self.limit_switch_pin),
         )
-        print(GPIO.input(self.limit_switch_pin))
-        while GPIO.input(self.limit_switch_pin) == GPIO.LOW:
-            print(GPIO.input(self.limit_switch_pin))
+        while asdf() == GPIO.LOW:
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
-        print(GPIO.input(self.limit_switch_pin))
 
-        print(f"2 - Avancando {self.nome}...")
+        print(f"2 - Avancando {self.nome}...", GPIO.input(self.limit_switch_pin))
         while GPIO.input(self.limit_switch_pin) == GPIO.HIGH:
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
 
-        print(f"3 - Aplicando offset {self.nome}...", self.limit_switch_pin)
+        print(f"3 - Aplicando offset {self.nome}...", GPIO.input(self.limit_switch_pin))
         self._motor.motor_go(
             not direction,
             conf.TIPO_PASSO,
