@@ -32,6 +32,7 @@ class Atuador:
 
         def asdf():
             a = GPIO.input(self.limit_switch_pin)
+            print(a)
             return a
 
         print(
