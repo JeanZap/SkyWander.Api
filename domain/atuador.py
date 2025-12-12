@@ -8,13 +8,20 @@ import shared.configuracao as conf
 class Atuador:
     _motor: A4988Nema = None
 
-    def __init__(self, limit_switch_pin: int, nome: str, offset: float):
+    def __init__(
+        self,
+        dir_pin: int,
+        step_pin: int,
+        limit_switch_pin: int,
+        nome: str,
+        offset: float,
+    ):
         GPIO.setmode(GPIO.BCM)
 
         GPIO.setup(limit_switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
         self._motor = RpiMotorLib.A4988Nema(
-            conf.DIR_PIN_DEC, conf.STEP_PIN_DEC, (False, False, False), "A4988"
+            dir_pin, step_pin, (False, False, False), "A4988"
         )
         self.limit_switch_pin = limit_switch_pin
         self.offset = offset

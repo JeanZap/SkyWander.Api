@@ -1,6 +1,4 @@
 import RPi.GPIO as GPIO
-from RpiMotorLib import RpiMotorLib
-from RpiMotorLib.RpiMotorLib import A4988Nema
 from domain.atuador import Atuador
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
@@ -34,8 +32,20 @@ class Montagem:
             conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
         )
 
-        self.motor_dec = Atuador(conf.LIMIT_SWITCH_DEC, "Dec", conf.OFFSET_DEC)
-        self.motor_ra = Atuador(conf.LIMIT_SWITCH_RA, "Ra", conf.OFFSET_RA)
+        self.motor_dec = Atuador(
+            conf.DIR_PIN_DEC,
+            conf.STEP_PIN_DEC,
+            conf.LIMIT_SWITCH_DEC,
+            "Dec",
+            conf.OFFSET_DEC,
+        )
+        self.motor_ra = Atuador(
+            conf.DIR_PIN_RA,
+            conf.STEP_PIN_RA,
+            conf.LIMIT_SWITCH_RA,
+            "Ra",
+            conf.OFFSET_RA,
+        )
 
         self._homing()
 
@@ -49,10 +59,10 @@ class Montagem:
             target=self.motor_ra.homing_motor,
         )
 
-        # t1.start()
+        t1.start()
         t2.start()
 
-        # t1.join()
+        t1.join()
         t2.join()
 
         print("Homing finalizado.")
