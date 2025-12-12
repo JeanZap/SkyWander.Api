@@ -59,11 +59,12 @@ class Montagem:
             target=self.motor_ra.homing_motor,
         )
 
+        self.motor_ra.homing_motor()
         # t1.start()
-        t2.start()
+        # t2.start()
 
         # t1.join()
-        t2.join()
+        # t2.join()
 
         print("Homing finalizado.")
 
