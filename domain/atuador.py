@@ -34,12 +34,15 @@ class Atuador:
             f"1 - Recuando {self.nome}...",
             GPIO.input(self.limit_switch_pin),
         )
+        print(GPIO.input(self.limit_switch_pin))
         while GPIO.input(self.limit_switch_pin) == GPIO.LOW:
+            print(GPIO.input(self.limit_switch_pin))
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
+        print(GPIO.input(self.limit_switch_pin))
 
-        print(f"2 - Avancando {self.nome}")
+        print(f"2 - Avancando {self.nome}...")
         while GPIO.input(self.limit_switch_pin) == GPIO.HIGH:
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
