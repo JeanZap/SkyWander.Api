@@ -37,7 +37,7 @@ class Atuador:
 
         while GPIO.input(self.limit_switch_pin) == GPIO.LOW:
             self._motor.motor_go(
-                direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
+                not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
         print(f"Switch {self.nome} pressionado. Recuando offset...")
 
