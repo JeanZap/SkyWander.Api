@@ -31,22 +31,21 @@ class Atuador:
         direction = True
 
         print(
-            f"Deixando posição de home {self.nome}...",
+            f"1 - Recuando {self.nome}...",
             GPIO.input(self.limit_switch_pin),
         )
-
         while GPIO.input(self.limit_switch_pin) == GPIO.LOW:
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
-        print(f"Switch {self.nome} pressionado. Recuando offset...")
 
+        print(f"2 - Avancando {self.nome}")
         while GPIO.input(self.limit_switch_pin) == GPIO.HIGH:
             self._motor.motor_go(
                 not direction, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0
             )
-        print(f"Homing motor {self.nome}...", GPIO.input(self.limit_switch_pin))
 
+        print(f"3 - Aplicando offset {self.nome}...", self.limit_switch_pin)
         self._motor.motor_go(
             not direction,
             conf.TIPO_PASSO,
@@ -55,6 +54,7 @@ class Atuador:
             False,
             0.0,
         )
+
         print(f"{self.nome} homing completo.")
 
     def mover_motor(self, passos: int):
