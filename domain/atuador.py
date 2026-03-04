@@ -18,7 +18,7 @@ class Atuador:
     ):
         GPIO.setmode(GPIO.BCM)
 
-        GPIO.setup(limit_switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(limit_switch_pin, GPIO.IN)
 
         self._motor = RpiMotorLib.A4988Nema(
             dir_pin, step_pin, (False, False, False), "A4988"
