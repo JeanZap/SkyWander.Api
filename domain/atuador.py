@@ -18,7 +18,7 @@ class Atuador:
     ):
         GPIO.setmode(GPIO.BCM)
 
-        GPIO.setup(limit_switch_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(limit_switch_pin, GPIO.IN)
 
         self._motor = RpiMotorLib.A4988Nema(
             dir_pin, step_pin, (False, False, False), "A4988"
@@ -33,7 +33,7 @@ class Atuador:
         return read
 
     def homing_motor(self):
-        print(f"1 - Recuando {self.nome}...", self._read_limit_switch())
+        print(f"1 - Recuando {self.nome}...", self._read_limit_switch(), GPIO.LOW)
         while self._read_limit_switch() == GPIO.LOW:
             self._motor.motor_go(True, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0)
 
