@@ -35,7 +35,7 @@ class Atuador:
     def homing_motor(self):
         print(f"1 - Recuando {self.nome}...", self._read_limit_switch(), GPIO.LOW)
         while self._read_limit_switch() == GPIO.LOW:
-            self._motor.motor_go(True, conf.TIPO_PASSO, 1000, conf.STEP_DELAY, False, 0.0)
+            self._motor.motor_go(True, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0)
 
         # print(f"2 - Avancando {self.nome}...", self._read_limit_switch())
         # while self._read_limit_switch() == GPIO.HIGH:
