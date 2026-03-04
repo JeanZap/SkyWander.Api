@@ -27,35 +27,29 @@ class Atuador:
         self.offset = offset
         self.nome = nome
 
-    def read_pin(self):
+    def _read_limit_switch(self):
         read = GPIO.input(self.limit_switch_pin)
         print(read)
         return read
 
     def homing_motor(self):
-        current_read = self.read_pin()
-        last_read = 0
-        print(f"1 - Recuando {self.nome}...", self.read_pin())
-        while last_read == GPIO.LOW or current_read == GPIO.LOW:
-            last_read = current_read
-            current_read = self.read_pin()
-            self._motor.motor_go(
-                True, conf.TIPO_PASSO, 100, conf.STEP_DELAY, False, 0.0
-            )
+        # print(f"1 - Recuando {self.nome}...", self._read_limit_switch())
+        # while self._read_limit_switch() == GPIO.LOW:
+        #     self._motor.motor_go(True, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0)
 
-        print(f"2 - Avancando {self.nome}...", self.read_pin())
-        while self.read_pin() == GPIO.HIGH:
+        print(f"2 - Avancando {self.nome}...", self._read_limit_switch())
+        while self._read_limit_switch() == GPIO.HIGH:
             self._motor.motor_go(False, conf.TIPO_PASSO, 1, conf.STEP_DELAY, False, 0.0)
 
-        print(f"3 - Aplicando offset {self.nome}...", self.read_pin())
-        self._motor.motor_go(
-            False,
-            conf.TIPO_PASSO,
-            aritmetica.converter_angulo_para_passos(self.offset),
-            conf.STEP_DELAY,
-            False,
-            0.0,
-        )
+        # print(f"3 - Aplicando offset {self.nome}...", self._read_limit_switch())
+        # self._motor.motor_go(
+        #     False,
+        #     conf.TIPO_PASSO,
+        #     aritmetica.converter_angulo_para_passos(self.offset),
+        #     conf.STEP_DELAY,
+        #     False,
+        #     0.0,
+        # )
 
         print(f"{self.nome} homing completo.")
 
