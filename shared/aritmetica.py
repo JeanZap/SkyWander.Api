@@ -1,7 +1,7 @@
+import math
+from datetime import datetime, timezone
+import erfa
 import shared.configuracao as conf
-from astropy.time import Time
-from astropy.coordinates import EarthLocation, Angle
-import astropy.units as u
 
 
 def converter_angulo_para_passos(angulo: float):
@@ -9,26 +9,31 @@ def converter_angulo_para_passos(angulo: float):
 
 
 def ra_to_hour_angle(ra_graus):
-    observador = EarthLocation(
-        lat=conf.LATITUDE*u.deg, lon=conf.LONGITUDE*u.deg, height=conf.ELEVACAO*u.m)
+    utc_now = datetime.now(timezone.utc)
 
-    tempo_atual = Time.now()
+    dj1, dj2 = erfa.dtf2d(
+        "UTC",
+        utc_now.year,
+        utc_now.month,
+        utc_now.day,
+        utc_now.hour,
+        utc_now.minute,
+        utc_now.second + (utc_now.microsecond / 1_000_000.0),
+    )
 
-    lst = tempo_atual.sidereal_time('apparent', longitude=observador.lon)
+    # Sem acesso a DUT1, assume UT1 ~= UTC.
+    ut1_1, ut1_2 = dj1, dj2
+    tai1, tai2 = erfa.utctai(dj1, dj2)
+    tt1, tt2 = erfa.taitt(tai1, tai2)
 
-    ra_graus = ra_graus * u.deg
+    rnpb = erfa.pnm06a(tt1, tt2)
+    gast = erfa.gst06(ut1_1, ut1_2, tt1, tt2, rnpb)
+    lst = erfa.anp(gast + math.radians(conf.LONGITUDE))
 
-    ra = Angle(ra_graus)
+    ra_rad = math.radians(ra_graus % 360)
+    ha = erfa.anp(lst - ra_rad)
 
-    ra_horas = ra.to(u.hourangle)
-
-    ha = lst - ra_horas
-
-    ha = ha.wrap_at(24 * u.hour)
-
-    ha_graus = ha.to(u.deg)
-
-    return ha_graus.wrap_at(360 * u.deg).value
+    return math.degrees(ha)
 
 
 def calcular_diferenca_angular(atual: float, destino: float) -> float:
