@@ -14,16 +14,16 @@ DELAY_ATUALIZACAO = 0.1  # RESOLUCAO_ATUADOR/ROTACAO_TERRA_GRAUS_SEGUNDO
 STEP_DELAY = 0.001
 INIT_STEP_DELAY = 0.05
 
-STEP_PIN_DEC = os.environ.get("STEP_PIN_DEC")
-DIR_PIN_DEC = os.environ.get("DIR_PIN_DEC")
+STEP_PIN_DEC = int(os.environ.get("STEP_PIN_DEC"))
+DIR_PIN_DEC = int(os.environ.get("DIR_PIN_DEC"))
 
-STEP_PIN_RA = os.environ.get("STEP_PIN_RA")
-DIR_PIN_RA = os.environ.get("DIR_PIN_RA")
+STEP_PIN_RA = int(os.environ.get("STEP_PIN_RA"))
+DIR_PIN_RA = int(os.environ.get("DIR_PIN_RA"))
 
-PIN_BUTTON_HOME = os.environ.get("PIN_BUTTON_HOME")
+PIN_BUTTON_HOME = int(os.environ.get("PIN_BUTTON_HOME"))
 
-LIMIT_SWITCH_DEC = os.environ.get("LIMIT_SWITCH_DEC")
-LIMIT_SWITCH_RA = os.environ.get("LIMIT_SWITCH_RA")
+LIMIT_SWITCH_DEC = int(os.environ.get("LIMIT_SWITCH_DEC"))
+LIMIT_SWITCH_RA = int(os.environ.get("LIMIT_SWITCH_RA"))
 
 OFFSET_DEC = 7
 OFFSET_RA = 7
