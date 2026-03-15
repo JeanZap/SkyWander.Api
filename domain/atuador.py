@@ -73,8 +73,6 @@ class Atuador:
         print(f"{self.nome} homing completo.")
 
     def mover_motor(self, passos: int):
-        print(conf.TIPO_PASSO, abs(passos),
-              conf.STEP_DELAY, False, conf.INIT_STEP_DELAY)
         sentido = passos < 0
 
         self._motor.motor_go(
