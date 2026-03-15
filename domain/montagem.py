@@ -52,18 +52,21 @@ class Montagem:
     def _homing(self):
         print("Iniciando homing...")
 
-        t1 = threading.Thread(
-            target=self.motor_dec.homing_motor,
-        )
-        t2 = threading.Thread(
-            target=self.motor_ra.homing_motor,
-        )
+        # t1 = threading.Thread(
+        #     target=self.motor_dec.homing_motor,
+        # )
+        # t2 = threading.Thread(
+        #     target=self.motor_ra.homing_motor,
+        # )
 
-        t1.start()
-        t2.start()
+        # t1.start()
+        # t2.start()
 
-        t1.join()
-        t2.join()
+        # t1.join()
+        # t2.join()
+
+        self.motor_dec.homing_motor()
+        self.motor_ra.homing_motor()
 
         print("Homing finalizado.")
 
