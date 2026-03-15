@@ -28,9 +28,7 @@ class Atuador:
         self.nome = nome
 
     def _read_limit_switch(self):
-        read = GPIO.input(self.limit_switch_pin)
-        print(read)
-        return read
+        return GPIO.input(self.limit_switch_pin)
 
     def homing_motor(self):
         print(f"1 - Recuando {self.nome}...", self._read_limit_switch())
@@ -44,7 +42,8 @@ class Atuador:
             if len(leituras_recuo) == 10 and leituras_recuo.count(GPIO.LOW) >= 7:
                 break
 
-            self._motor.motor_go(True, conf.TIPO_PASSO, 10, conf.STEP_DELAY, False, 0.0)
+            self._motor.motor_go(True, conf.TIPO_PASSO, 10,
+                                 conf.STEP_DELAY, False, 0.0)
 
         print(f"2 - Avancando {self.nome}...", self._read_limit_switch())
         leituras_avanco = []
@@ -57,9 +56,11 @@ class Atuador:
             if len(leituras_avanco) == 10 and leituras_avanco.count(GPIO.HIGH) >= 7:
                 break
 
-            self._motor.motor_go(False, conf.TIPO_PASSO, 10, conf.STEP_DELAY, False, 0.0)
+            self._motor.motor_go(False, conf.TIPO_PASSO,
+                                 10, conf.STEP_DELAY, False, 0.0)
 
-        print(f"3 - Aplicando offset {self.nome}...", self._read_limit_switch())
+        print(f"3 - Aplicando offset {self.nome}...",
+              self._read_limit_switch())
         self._motor.motor_go(
             False,
             conf.TIPO_PASSO,

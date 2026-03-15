@@ -52,21 +52,18 @@ class Montagem:
     def _homing(self):
         print("Iniciando homing...")
 
-        # t1 = threading.Thread(
-        #     target=self.motor_dec.homing_motor,
-        # )
-        # t2 = threading.Thread(
-        #     target=self.motor_ra.homing_motor,
-        # )
+        t1 = threading.Thread(
+            target=self.motor_dec.homing_motor,
+        )
+        t2 = threading.Thread(
+            target=self.motor_ra.homing_motor,
+        )
 
-        # t1.start()
-        # t2.start()
+        t1.start()
+        t2.start()
 
-        # t1.join()
-        # t2.join()
-
-        self.motor_dec.homing_motor()
-        self.motor_ra.homing_motor()
+        t1.join()
+        t2.join()
 
         print("Homing finalizado.")
 
@@ -149,7 +146,8 @@ class Montagem:
         return dec, ra
 
     def diferenca_posicao_alvo_eixo(self, angulo_atual: float, angulo_alvo: float):
-        diferenca = aritmetica.calcular_diferenca_angular(angulo_atual, angulo_alvo)
+        diferenca = aritmetica.calcular_diferenca_angular(
+            angulo_atual, angulo_alvo)
         return aritmetica.converter_angulo_para_passos(diferenca)
 
     def iniciar_tracking(self, tempo_offset: float = 0.0):
