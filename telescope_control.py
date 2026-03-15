@@ -47,8 +47,7 @@ def start_stellarium_receiver(host="0.0.0.0", port=10000):
                             print("Dados recebidos não são JSON válido:", data)
 
             except KeyboardInterrupt:
-                # //TODO: reabilitar
-                # atuadores.mover_home()
+                atuadores.mover_home()
                 print("\nServidor encerrado pelo usuário.")
                 break
             except Exception as e:

@@ -94,10 +94,10 @@ class Montagem:
             " - protegido",
         )
         t1 = threading.Thread(
-            target=self.motor_dec.mover_motor, args=(dec_passos_restantes)
+            target=self.motor_dec.mover_motor, args=(dec_passos_restantes,)
         )
         t2 = threading.Thread(
-            target=self.motor_ra.mover_motor, args=(ra_passos_restantes)
+            target=self.motor_ra.mover_motor, args=(ra_passos_restantes,)
         )
 
         t1.start()
