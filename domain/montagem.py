@@ -132,6 +132,9 @@ class Montagem:
             for thread in threads:
                 thread.start()
 
+            for thread in threads:
+                thread.join()
+
     def _mover_motor_loop(self, motor_ra: Atuador, passos: int):
         while not self.kill_gamepad_threads:
             motor_ra.mover_motor(passos)
