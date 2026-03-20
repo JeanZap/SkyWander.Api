@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 from domain.atuador import Atuador
-from domain.gamepad_listener_pyxboxcontroller import GamepadButtonListener, GamepadEvent
+from domain.gamepad_listener_pygamepad import GamepadButtonListener, GamepadEvent
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
