@@ -31,10 +31,10 @@ class Montagem:
 
         GPIO.setmode(GPIO.BCM)
 
-        GPIO.setup(conf.PIN_BUTTON_HOME, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(
-            conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
-        )
+        # GPIO.setup(conf.PIN_BUTTON_HOME, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # GPIO.add_event_detect(
+        #     conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
+        # )
 
         if conf.GAMEPAD_ENABLED:
             try:
