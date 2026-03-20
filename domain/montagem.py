@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 import RPi.GPIO as GPIO
 from domain.atuador import Atuador
@@ -10,7 +10,6 @@ import time
 
 
 class Montagem:
-    MAX_PASSOS_ANALOGICO = 20
     posicao_inicial = {
         "dec": 0,
         "ra": 0,
@@ -29,8 +28,10 @@ class Montagem:
     esta_espelhado = False
 
     def __init__(self):
-        self.kill_gamepad_threads = False
         self.gamepad_listener = None
+        self._gamepad_move_lock = threading.Lock()
+        self._gamepad_move_stop_event: Optional[threading.Event] = None
+        self._gamepad_move_threads: List[threading.Thread] = []
 
         GPIO.setmode(GPIO.BCM)
 
@@ -95,56 +96,77 @@ class Montagem:
             print(f"Captura do gamepad {estado}.")
             if evento.capture_enabled:
                 self._parar_tracking()
+            else:
+                self._parar_movimento_gamepad()
             return
 
         if evento.event_type == "left_analog_motion":
             if not evento.capture_enabled:
+                self._parar_movimento_gamepad()
                 return
 
             left_x = float(evento.left_x or 0.0)
             left_y = float(evento.left_y or 0.0)
 
-            passos_ra = self._converter_analogico_para_passos(left_x)
-            passos_dec = self._converter_analogico_para_passos(left_y)
-
-            if passos_ra == 0 and passos_dec == 0:
-                return
-
             print(
                 f"Analogico esquerdo x={left_x:.3f} y={left_y:.3f} "
-                f"-> passos RA={passos_ra} DEC={passos_dec}"
+                "-> atualizando movimento continuo"
             )
+            self._reiniciar_movimento_gamepad(left_x, left_y)
 
-            self.kill_gamepad_threads = False
-            threads: List[threading.Thread] = []
+    def _reiniciar_movimento_gamepad(self, left_x: float, left_y: float):
+        self._parar_movimento_gamepad()
 
-            if passos_ra != 0:
-                threads.append(
-                    threading.Thread(
-                        target=self._mover_motor_loop, args=(self.motor_ra, passos_ra,))
+        if left_x == 0.0 and left_y == 0.0:
+            return
+
+        with self._gamepad_move_lock:
+            stop_event = threading.Event()
+            self._gamepad_move_stop_event = stop_event
+            self._gamepad_move_threads = []
+
+            if left_x != 0.0:
+                thread_ra = threading.Thread(
+                    target=self._loop_movimento_motor_gamepad,
+                    args=(self.motor_ra, left_x, stop_event),
+                    daemon=True,
                 )
-            if passos_dec != 0:
-                threads.append(
-                    threading.Thread(
-                        target=self._mover_motor_loop, args=(self.motor_dec, passos_dec,))
-                )
+                self._gamepad_move_threads.append(thread_ra)
 
-            for thread in threads:
+            if left_y != 0.0:
+                thread_dec = threading.Thread(
+                    target=self._loop_movimento_motor_gamepad,
+                    args=(self.motor_dec, left_y, stop_event),
+                    daemon=True,
+                )
+                self._gamepad_move_threads.append(thread_dec)
+
+            for thread in self._gamepad_move_threads:
                 thread.start()
 
-            for thread in threads:
-                thread.join()
+    def _parar_movimento_gamepad(self):
+        with self._gamepad_move_lock:
+            stop_event = self._gamepad_move_stop_event
+            threads = self._gamepad_move_threads
+            self._gamepad_move_stop_event = None
+            self._gamepad_move_threads = []
 
-    def _mover_motor_loop(self, motor_ra: Atuador, passos: int):
-        while not self.kill_gamepad_threads:
-            motor_ra.mover_motor(passos)
+        if stop_event is not None:
+            stop_event.set()
 
-    def _converter_analogico_para_passos(self, valor: float) -> int:
-        intensidade = min(max(abs(valor), 0.0), 1.0)
-        passos = int(round(intensidade * self.MAX_PASSOS_ANALOGICO))
-        if passos == 0:
-            return 0
-        return passos if valor > 0 else -passos
+        for thread in threads:
+            if thread.is_alive():
+                thread.join(timeout=0.2)
+
+    def _loop_movimento_motor_gamepad(
+        self,
+        motor: Atuador,
+        valor_eixo: float,
+        stop_event: threading.Event,
+    ):
+        passos = 1 if valor_eixo > 0 else -1
+        while not stop_event.is_set():
+            motor.mover_motor(passos)
 
     def apontar(self, dec_alvo: float, ra_alvo: float):
         self._parar_tracking()
@@ -254,6 +276,7 @@ class Montagem:
         self.tracking_ativo = False
 
     def __del__(self):
+        self._parar_movimento_gamepad()
         if self.gamepad_listener is not None:
             self.gamepad_listener.stop()
         GPIO.cleanup()
