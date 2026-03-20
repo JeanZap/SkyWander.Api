@@ -36,17 +36,6 @@ class Montagem:
         #     conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
         # )
 
-        if conf.GAMEPAD_ENABLED:
-            try:
-                self.gamepad_listener = GamepadButtonListener(
-                    callback=self._test_gamepad,
-                    button_index=conf.GAMEPAD_HOME_BUTTON,
-                    bouncetime_ms=conf.GAMEPAD_BOUNCETIME_MS,
-                )
-                self.gamepad_listener.start()
-            except Exception as e:
-                print(f"Falha ao iniciar listener de gamepad: {e}")
-
         self.motor_dec = Atuador(
             conf.DIR_PIN_DEC,
             conf.STEP_PIN_DEC,
@@ -63,6 +52,17 @@ class Montagem:
         )
 
         self._homing()
+
+        if conf.GAMEPAD_ENABLED:
+            try:
+                self.gamepad_listener = GamepadButtonListener(
+                    callback=self._test_gamepad,
+                    button_index=conf.GAMEPAD_HOME_BUTTON,
+                    bouncetime_ms=conf.GAMEPAD_BOUNCETIME_MS,
+                )
+                self.gamepad_listener.start()
+            except Exception as e:
+                print(f"Falha ao iniciar listener de gamepad: {e}")
 
     def _homing(self):
         print("Iniciando homing...")
