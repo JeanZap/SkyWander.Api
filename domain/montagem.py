@@ -1,3 +1,5 @@
+from typing import List
+
 import RPi.GPIO as GPIO
 from domain.atuador import Atuador
 from domain.gamepad_listener_pygamepad import GamepadButtonListener, GamepadEvent
@@ -27,6 +29,7 @@ class Montagem:
     esta_espelhado = False
 
     def __init__(self):
+        self.kill_gamepad_threads = False
         self.gamepad_listener = None
 
         GPIO.setmode(GPIO.BCM)
@@ -112,20 +115,26 @@ class Montagem:
                 f"-> passos RA={passos_ra} DEC={passos_dec}"
             )
 
-            threads = []
+            self.kill_gamepad_threads = False
+            threads: List[threading.Thread] = []
+
             if passos_ra != 0:
                 threads.append(
-                    threading.Thread(target=self.motor_ra.mover_motor, args=(passos_ra,))
+                    threading.Thread(
+                        target=self._mover_motor_loop, args=(self.motor_ra, passos_ra,))
                 )
             if passos_dec != 0:
                 threads.append(
-                    threading.Thread(target=self.motor_dec.mover_motor, args=(passos_dec,))
+                    threading.Thread(
+                        target=self._mover_motor_loop, args=(self.motor_dec, passos_dec,))
                 )
 
             for thread in threads:
                 thread.start()
-            for thread in threads:
-                thread.join()
+
+    def _mover_motor_loop(self, motor_ra: Atuador, passos: int):
+        while not self.kill_gamepad_threads:
+            motor_ra.mover_motor(passos)
 
     def _converter_analogico_para_passos(self, valor: float) -> int:
         intensidade = min(max(abs(valor), 0.0), 1.0)
