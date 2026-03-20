@@ -8,7 +8,7 @@ import time
 
 
 class Montagem:
-    MAX_PASSOS_ANALOGICO = 100
+    MAX_PASSOS_ANALOGICO = 20
     posicao_inicial = {
         "dec": 0,
         "ra": 0,
@@ -56,7 +56,7 @@ class Montagem:
         if conf.GAMEPAD_ENABLED:
             try:
                 self.gamepad_listener = GamepadButtonListener(
-                    callback=self._test_gamepad,
+                    callback=self._move_via_gamepad,
                     button_index=conf.GAMEPAD_HOME_BUTTON,
                     bouncetime_ms=conf.GAMEPAD_BOUNCETIME_MS,
                 )
@@ -86,7 +86,7 @@ class Montagem:
         self._parar_tracking()
         self._homing()
 
-    def _test_gamepad(self, evento: GamepadEvent):
+    def _move_via_gamepad(self, evento: GamepadEvent):
         if evento.event_type == "toggle_capture":
             estado = "iniciada" if evento.capture_enabled else "parada"
             print(f"Captura do gamepad {estado}.")
@@ -126,15 +126,6 @@ class Montagem:
                 thread.start()
             for thread in threads:
                 thread.join()
-
-            self.posicao["raPassos"] += passos_ra
-            self.posicao["decPassos"] += passos_dec
-            self.posicao["ra"] = (
-                self.posicao["ra"] + (passos_ra * conf.RESOLUCAO_ATUADOR)
-            ) % 360
-            self.posicao["dec"] = (
-                self.posicao["dec"] + (passos_dec * conf.RESOLUCAO_ATUADOR)
-            ) % 360
 
     def _converter_analogico_para_passos(self, valor: float) -> int:
         intensidade = min(max(abs(valor), 0.0), 1.0)

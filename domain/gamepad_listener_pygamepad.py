@@ -55,6 +55,7 @@ class GamepadButtonListener:
 
     def _event_loop(self):
         while self._running:
+            axis_motion_detected = False
             for event in pygame.event.get():
                 if event.type == pygame.JOYBUTTONDOWN:
                     if self.button_index is not None and event.button != self.button_index:
@@ -78,21 +79,27 @@ class GamepadButtonListener:
                 if event.type == pygame.JOYAXISMOTION and self._capture_enabled:
                     if event.axis not in (0, 1):
                         continue
+                    axis_motion_detected = True
 
-                    left_x = self._joystick.get_axis(0)
-                    left_y = self._joystick.get_axis(1)
-                    if abs(left_x) < self.analog_deadzone and abs(left_y) < self.analog_deadzone:
-                        continue
+            if axis_motion_detected and self._capture_enabled:
+                left_x = self._joystick.get_axis(0)
+                left_y = self._joystick.get_axis(1)
 
-                    self.callback(
-                        GamepadEvent(
-                            event_type="left_analog_motion",
-                            timestamp_ms=time.monotonic() * 1000,
-                            capture_enabled=self._capture_enabled,
-                            left_x=left_x,
-                            left_y=left_y,
-                        )
+                # Normaliza pequenos ruídos para zero, incluindo quando o stick retorna ao centro.
+                if abs(left_x) < self.analog_deadzone:
+                    left_x = 0.0
+                if abs(left_y) < self.analog_deadzone:
+                    left_y = 0.0
+
+                self.callback(
+                    GamepadEvent(
+                        event_type="left_analog_motion",
+                        timestamp_ms=time.monotonic() * 1000,
+                        capture_enabled=self._capture_enabled,
+                        left_x=left_x,
+                        left_y=left_y,
                     )
+                )
 
             time.sleep(0.01)
 
