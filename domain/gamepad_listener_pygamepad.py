@@ -56,8 +56,6 @@ class GamepadButtonListener:
     def _event_loop(self):
         while self._running:
             for event in pygame.event.get():
-                print(event)
-
                 if event.type == pygame.JOYBUTTONDOWN:
                     if self.button_index is not None and event.button != self.button_index:
                         continue
