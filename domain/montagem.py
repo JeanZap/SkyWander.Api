@@ -1,5 +1,6 @@
 import RPi.GPIO as GPIO
 from domain.atuador import Atuador
+from domain.gamepad_listener_pyxboxcontroller import GamepadButtonListener, GamepadEvent
 import shared.aritmetica as aritmetica
 import shared.configuracao as conf
 import threading
@@ -7,6 +8,7 @@ import time
 
 
 class Montagem:
+    MAX_PASSOS_ANALOGICO = 100
     posicao_inicial = {
         "dec": 0,
         "ra": 0,
@@ -25,12 +27,25 @@ class Montagem:
     esta_espelhado = False
 
     def __init__(self):
+        self.gamepad_listener = None
+
         GPIO.setmode(GPIO.BCM)
 
         GPIO.setup(conf.PIN_BUTTON_HOME, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.add_event_detect(
             conf.PIN_BUTTON_HOME, GPIO.FALLING, callback=self.mover_home, bouncetime=300
         )
+
+        if conf.GAMEPAD_ENABLED:
+            try:
+                self.gamepad_listener = GamepadButtonListener(
+                    callback=self._test_gamepad,
+                    button_index=conf.GAMEPAD_HOME_BUTTON,
+                    bouncetime_ms=conf.GAMEPAD_BOUNCETIME_MS,
+                )
+                self.gamepad_listener.start()
+            except Exception as e:
+                print(f"Falha ao iniciar listener de gamepad: {e}")
 
         self.motor_dec = Atuador(
             conf.DIR_PIN_DEC,
@@ -70,6 +85,63 @@ class Montagem:
     def mover_home(self):
         self._parar_tracking()
         self._homing()
+
+    def _test_gamepad(self, evento: GamepadEvent):
+        if evento.event_type == "toggle_capture":
+            estado = "iniciada" if evento.capture_enabled else "parada"
+            print(f"Captura do gamepad {estado}.")
+            if evento.capture_enabled:
+                self._parar_tracking()
+            return
+
+        if evento.event_type == "left_analog_motion":
+            if not evento.capture_enabled:
+                return
+
+            left_x = float(evento.left_x or 0.0)
+            left_y = float(evento.left_y or 0.0)
+
+            passos_ra = self._converter_analogico_para_passos(left_x)
+            passos_dec = self._converter_analogico_para_passos(left_y)
+
+            if passos_ra == 0 and passos_dec == 0:
+                return
+
+            print(
+                f"Analogico esquerdo x={left_x:.3f} y={left_y:.3f} "
+                f"-> passos RA={passos_ra} DEC={passos_dec}"
+            )
+
+            threads = []
+            if passos_ra != 0:
+                threads.append(
+                    threading.Thread(target=self.motor_ra.mover_motor, args=(passos_ra,))
+                )
+            if passos_dec != 0:
+                threads.append(
+                    threading.Thread(target=self.motor_dec.mover_motor, args=(passos_dec,))
+                )
+
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join()
+
+            self.posicao["raPassos"] += passos_ra
+            self.posicao["decPassos"] += passos_dec
+            self.posicao["ra"] = (
+                self.posicao["ra"] + (passos_ra * conf.RESOLUCAO_ATUADOR)
+            ) % 360
+            self.posicao["dec"] = (
+                self.posicao["dec"] + (passos_dec * conf.RESOLUCAO_ATUADOR)
+            ) % 360
+
+    def _converter_analogico_para_passos(self, valor: float) -> int:
+        intensidade = min(max(abs(valor), 0.0), 1.0)
+        passos = int(round(intensidade * self.MAX_PASSOS_ANALOGICO))
+        if passos == 0:
+            return 0
+        return passos if valor > 0 else -passos
 
     def apontar(self, dec_alvo: float, ra_alvo: float):
         self._parar_tracking()
@@ -179,4 +251,6 @@ class Montagem:
         self.tracking_ativo = False
 
     def __del__(self):
+        if self.gamepad_listener is not None:
+            self.gamepad_listener.stop()
         GPIO.cleanup()

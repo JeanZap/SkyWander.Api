@@ -21,6 +21,18 @@ STEP_PIN_RA = int(os.environ.get("STEP_PIN_RA"))
 DIR_PIN_RA = int(os.environ.get("DIR_PIN_RA"))
 
 PIN_BUTTON_HOME = int(os.environ.get("PIN_BUTTON_HOME"))
+GAMEPAD_ENABLED = os.environ.get("GAMEPAD_ENABLED", "false").lower() in (
+    "1",
+    "true",
+    "t",
+    "yes",
+    "y",
+    "on",
+)
+GAMEPAD_HOME_BUTTON = int(os.environ.get("GAMEPAD_HOME_BUTTON", "0"))
+if GAMEPAD_HOME_BUTTON < 0:
+    GAMEPAD_HOME_BUTTON = None
+GAMEPAD_BOUNCETIME_MS = int(os.environ.get("GAMEPAD_BOUNCETIME_MS", "300"))
 
 LIMIT_SWITCH_DEC = int(os.environ.get("LIMIT_SWITCH_DEC"))
 LIMIT_SWITCH_RA = int(os.environ.get("LIMIT_SWITCH_RA"))
