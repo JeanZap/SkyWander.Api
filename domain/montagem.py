@@ -1,5 +1,4 @@
 from typing import List, Optional
-
 import RPi.GPIO as GPIO
 from domain.atuador import Atuador
 from domain.gamepad_listener_pygamepad import GamepadButtonListener, GamepadEvent
@@ -10,6 +9,8 @@ import time
 
 
 class Montagem:
+    MIN_PASSOS_LOOP_GAMEPAD = 10
+    MAX_PASSOS_LOOP_GAMEPAD = 120
     posicao_inicial = {
         "dec": 0,
         "ra": 0,
@@ -164,7 +165,13 @@ class Montagem:
         valor_eixo: float,
         stop_event: threading.Event,
     ):
-        passos = 1 if valor_eixo > 0 else -1
+        intensidade = min(max(abs(valor_eixo), 0.0), 1.0)
+        passos_por_loop = int(
+            self.MIN_PASSOS_LOOP_GAMEPAD
+            + (self.MAX_PASSOS_LOOP_GAMEPAD - self.MIN_PASSOS_LOOP_GAMEPAD) * intensidade
+        )
+        passos = passos_por_loop if valor_eixo > 0 else -passos_por_loop
+
         while not stop_event.is_set():
             motor.mover_motor(passos)
 
