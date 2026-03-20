@@ -8,7 +8,7 @@ if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
 
 import shared.configuracao as conf
-from domain.gamepad_listener_pyxboxcontroller import GamepadButtonListener, GamepadEvent
+from domain.gamepad_listener_pygamepad import GamepadButtonListener, GamepadEvent
 
 
 def _test_gamepad(evento: GamepadEvent):
