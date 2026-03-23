@@ -94,6 +94,27 @@ class Montagem:
             print(f"Captura do gamepad {estado}.")
             if evento.capture_enabled:
                 self._parar_tracking()
+            else:
+                print("Retornando montagem para (0,0)...")
+
+                threads: List[threading.Thread] = []
+
+                threads.append(
+                    threading.Thread(
+                        target=self.motor_ra.mover_motor, args=(0,))
+                )
+                threads.append(
+                    threading.Thread(
+                        target=self.motor_dec.mover_motor, args=(0,))
+                )
+
+                for thread in threads:
+                    thread.start()
+                for thread in threads:
+                    thread.join()
+
+                self.posicao = self.posicao_inicial.copy()
+
             return
 
         if evento.event_type == "left_analog_motion":
@@ -117,11 +138,13 @@ class Montagem:
             threads: List[threading.Thread] = []
             if passos_ra != 0:
                 threads.append(
-                    threading.Thread(target=self.motor_ra.mover_motor, args=(passos_ra,))
+                    threading.Thread(
+                        target=self.motor_ra.mover_motor, args=(passos_ra,))
                 )
             if passos_dec != 0:
                 threads.append(
-                    threading.Thread(target=self.motor_dec.mover_motor, args=(passos_dec,))
+                    threading.Thread(
+                        target=self.motor_dec.mover_motor, args=(passos_dec,))
                 )
 
             for thread in threads:
